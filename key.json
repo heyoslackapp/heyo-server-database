@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "qreatech",
+  "private_key_id": "2f7a9172b90b82c82f49ef2216733d1af43d95c0",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC29g4fdtpmk23G\ntLh/k9aP7/WR1/gW5xoclGoRMfqlHlpVyVQxUFh1VqalMQaOt3aNkzyT66RP0gAa\nwIcm5mrFMc/9QsIz7RtZ7aKW9MRTa92T7XfgA4S78nxh8e1+0Jy6DqY4wRTETxuP\nk2PbPCod06Ff2zbhP/LEikrkgjD5cUPgikN0COmfGTQgpsA0bF6/iHZ0z1qoDUXa\nXlG0w+6dQlY3+muE0z3z2BcEFLvzgC0UdYnpqYDAqxf/Dg90cbHbGI/fjefZX7ZW\nGwiX0vJXkJHlYtdCXswNiDY459VLlVKPTOAfxZeewdWL/e/9Mam913oYHd9jPtkc\nMlEwGXP1AgMBAAECggEAGKyHvI4Mh5tXyV2raQcgv0Ia8ct4qWwKvTJ1uHJvTS/R\n+nI/kLP3bgGc0TfSnNIYoqCp4X/8pYgaXAE9aM1XtlbQqCTF6HdQQjk2PVnulRp9\npBq5GSSYVLlvtUzJXNoY3M2ndI1zdcL+Ykc8Bv+u5V1aTMFVPhzf6koFLhpxrN3y\n2mnZxf0jX6Wfc6yMskeFNQMdnzZhVdAbwAu0qBziWKcG31+Wd0TgBk1/G4RYvmeS\nq2HYv5Ldaju+E+djBJltLWbajQNZ8oPztOnMAkT6sUoHIpMn1Yf/ZKHwDYfVjkxf\n0Bz+agh77+Ioy1FSQrr9oekMQakfPFsLpvGshhknaQKBgQD40ySbIewi5425LKHb\nPYhOXgbw7EIOWn3Z7mvgcHm9azD0m7JRQGMax/ROjAs5Ar4Uhg2yBHAGMUllOxwO\nPjABPv/WWZ8PMOTuAqMN19EKx3pUdAyq9xZ+9JZ34Rs8XTAwA7E2rag38Hr3z/hX\nYr9ThEHF8MApRCk76fdAOFiy/QKBgQC8PLLDodV7nBQxOK49+LsqcPMNpvcTr21q\nMZvyct8hpcW1oFo13FPyKFG47cRKw0YhepJF9voPaI6FFzEZm63fmJG2gecG4+AS\n78OFwiiPOBH/s2lv+P9ptC/rNe9ldrxCKxLCCyPMMAIghW085gm70Lnpkt2wZsd3\nWo4YbPZCWQKBgH5CbbXGXdNMWg7Xhf4A2DSj47PGvrIX2vqFz/mgOTYTuVC13KL8\nIA3L3r0otN0l9hvl9fcZ51pNEigq+U6E4ckQFbPH4D1OGyxm7CQvGeT1Wa6XAIKU\nRLcBF4UXFcHoq3YBuZ+8OLrB7TPoNOTqt5kCaHmvc2K9MoszaoIM1X1lAoGAAWYW\nEfwW4QdE4yS/rrg1c9hJBhXyihPopTxfI0sVO2PG91WMtg/AE/GWweAKcF/JGqCV\ni62NKCYnwPduJvmQLjQtCQUoGVYCKUHc2xaZRI8vGw5TP0DDbR6oqH/LGp7qQTee\nuRBqIK9OpL05FZXEBsBDUWgE+7WXz9w9aBMPNWkCgYEAkjRock3Whju4YGZcUQxR\nWxaD1rvkoz/b1z/R3tXagRQHI3LffCvNAWCQfN2LmCnduzxXoQXgHn8M894EEe4d\nZFIwdDX5d2VKZ94uOcepQ+E6UBvorC+JVPpWcf1wwQ9wyILRyCb7ySuc5uxJh1j6\nhC/pQYpE/gITQI2OXZRzIAA=\n-----END PRIVATE KEY-----\n",
+  "client_email": "qrea-623@qreatech.iam.gserviceaccount.com",
+  "client_id": "111850995992377326534",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/qrea-623%40qreatech.iam.gserviceaccount.com"
+}

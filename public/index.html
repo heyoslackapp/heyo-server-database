@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <!--   <meta
+      name="google-signin-client_id"
+      content="334029472076-9ujtkhlas64fagqmq4li6ejd0bta8uqm.apps.googleusercontent.com"
+    />-->
+  </head>
+  <body>
+    <h2>Backend</h2>
+    <!--
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <br /><br /><br />
+    <a href="#" onclick="signOut();">Sign out</a>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <script>
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/google");
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.onload = function () {
+          console.log("Signed in as: " + xhr.responseText);
+        };
+
+        xhr.send("idtoken=" + googleUser.getAuthResponse().id_token);
+      }
+
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log("User signed out.");
+        });
+      }
+    </script>
+    -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.3/socket.io.js"
+      integrity="sha512-Jr0UIR/Q8MUX+93zjDOhuDUKLqJZObtwpkLJQcR9qMaLgL0thet39IORuavUaZFkZ8a4ktrUsKPM9mf5LWMduA=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const socket = io("https://qreatech.herokuapp.com");
+
+      socket.on("current-bands", (data) => {
+        console.log(data);
+      });
+
+      /*
+     setTimeout(() => {
+         socket.emit("message-to-server","ok");
+      }, 2000);
+      */
+
+    </script>
+  </body>
+</html>
