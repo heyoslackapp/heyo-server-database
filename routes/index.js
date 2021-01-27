@@ -29,5 +29,6 @@ app.use(require("./app"));
 app.use(require("./trans"));
 app.use(require("./guest"));
 app.use(require("./bucket"));
+app.use(require("./slack"));
 
 module.exports = app;
