@@ -2,12 +2,8 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { verificarToken } = require("../middlewares/autenticacion");
-const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const _ = require("underscore");
-var geoip = require("geoip-lite");
-const requestIp = require("request-ip");
 
 const app = express();
 
@@ -70,8 +66,6 @@ app.post("/login", (req, res) => {
           expiresIn: process.env.EXPIRATION_DATE,
         });
 
-        const clientIp = requestIp.getClientIp(req);
-        var geo = geoip.lookup(clientIp);
 
         const body2 = {
           status: true,

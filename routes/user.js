@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const _ = require("underscore");
 const { verificarToken, isAdmin } = require("../middlewares/autenticacion");
 var moment = require("moment-timezone");
 

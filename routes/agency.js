@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
-const _ = require('underscore');
 const { verificarToken,isAdmin } = require('../middlewares/autenticacion');
 
 const Agency = require('../models/agency');

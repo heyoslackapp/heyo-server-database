@@ -1,3 +1,4 @@
+var SlackBot = require('slackbots');
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -5,9 +6,74 @@ moment = require("moment");
 const { WebClient } = require('@slack/web-api');
 const token = "xoxp-224498606455-233668675862-1703846489376-d42ad9b0799111e6e8e562d5b1a5935b";
 const web = new WebClient(token);
+const { App } = require('@slack/bolt');
 
 const Slackuser = require('../models/slackuser');
 const Slackchannel = require('../models/slackchannel');
+
+var bot = new SlackBot({
+  token:"xoxb-224498606455-1686841326421-wCDx5fvB4uhMkt6FONPcKYCg",
+  name:"paisabot"
+});
+
+
+let conversationsStore = {};
+
+async function populateConversationStore() {
+  try {
+    // Call the conversations.list method using the WebClient
+    const result = await web.conversations.list({
+      types: "private_channel",
+      limit: 200 
+    });
+    saveConversations(result.channels);
+  }
+  catch (error) {
+    console.error(error);
+  }
+}
+
+function saveConversations(conversationsArray) {
+  let conversationId = '';
+
+  conversationsArray.forEach(function(conversation){
+    // Key conversation info on its unique ID
+    conversationId = conversation["id"];
+    // Store the entire conversation object (you may not need all of the info)
+    conversationsStore[conversationId] = conversation;
+  });
+}
+
+
+bot.on('message', async function(data) {
+  // all ingoing events https://api.slack.com/rtm
+  //bot.postMessageToUser('pedrorojas', 'meow!', { 'slackbot': true, icon_emoji: ':cat:' }); 
+ 
+  if(!data.text || data.type !== 'message' || data.subtype == 'bot_message' ) return;
+  
+  populateConversationStore();
+ 
+
+  if(data.channel){
+    console.log(data.channel);
+    try {
+      console.log(conversationsStore[data.channel].name)
+      bot.postMessageToChannel(conversationsStore[data.channel].name, 'hagale sin miedooooooo!');
+
+    } catch (error) {
+      console.log("error")
+    }
+    
+  }
+
+  if(data.text === "mijooo"){
+   // bot.postMessageToChannel(conversationsStore[data.channel].name, 'hagale sin miedooooooo!');
+    
+  }
+
+});
+
+
 
 app.post('/adduser', (req,res) => { 
     console.log(req.body);
@@ -55,7 +121,7 @@ app.post('/adduser', (req,res) => {
         })
       });
 
-})
+});
 
 app.post('/addconversation', (req,res) => { 
     const params = req.body;
@@ -98,7 +164,7 @@ app.post('/addconversation', (req,res) => {
           })();
     }
     
-})  
+}); 
 
 app.post('/play', (req,res) => { 
 
@@ -169,6 +235,6 @@ const users__ = userArray.join(",");
 
      
     
-})
+});
 
 module.exports = app;
