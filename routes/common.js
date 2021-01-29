@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const UserEvent = require("../models/userEvent");
 
 exports.sendEmail20 = ({ name, message, email }) => {
 
@@ -98,20 +97,4 @@ exports.sendEmailBasic = ({ name, message, email }) => {
 
 
 }
-
-exports.registerUserEvent = (props) => {
-
-    let userEvent  = new UserEvent({
-        userId:props.userId,
-        conferenceId:props.conferenceId,
-        type:props.type,
-        description: props.description,
-        questionId: props.questionId,
-        surveyId: props.surveyId,
-        date:moment.now()
-    })
-
-    userEvent.save(( err,userEventDB ) => console.log(err))
-}
-
 

@@ -6,7 +6,6 @@ const _ = require("underscore");
 const { verificarToken, isAdmin } = require("../middlewares/autenticacion");
 var moment = require("moment-timezone");
 
-const UserEvent = require("../models/userEvent");
 const User = require("../models/user");
 const Root = require("../models/root");
 
@@ -86,35 +85,6 @@ app.post("/userLoadGrid", (req, res) => {
         });
       });
   });
-});
-
-app.get("/usuarix/:userId", verificarToken, (req, res) => {
-  const conferenceId = req.usuario.conferenceId;
-  let userId = req.params.userId;
-  let parametro = req.body;
-
-  // const start = parametro.start;
-  // const end = parametro.end;
-  //  date: { $gte: start, $lt: end }
-
-  UserEvent.find({ conferenceId, userId })
-    .populate("questionId")
-    .populate("surveyId")
-    .populate("userId")
-    .sort([["date", -1]])
-    .exec((err, usuarios) => {
-      if (err) {
-        return res.status(400).json({
-          ok: false,
-          err,
-        });
-      }
-
-      res.json({
-        ok: true,
-        usuarios,
-      });
-    });
 });
 
 app.get("/usuarioDetails/:userId", verificarToken, (req, res) => {

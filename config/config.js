@@ -7,10 +7,10 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'env'
 let urlDB;
 
 if(process.env.NODE_ENV === 'dev'){
-    urlDB = "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/cluufweb?retryWrites=true";
+    urlDB = "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/culturebuilder?retryWrites=true";
 }else{
     //urlDB = process.env.MONGO_URI;
-    urlDB = "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/cluufweb?retryWrites=true";
+    urlDB = "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/culturebuilder?retryWrites=true";
 }
 
 

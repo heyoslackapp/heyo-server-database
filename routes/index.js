@@ -1,34 +1,12 @@
 const express = require("express");
 const app = express();
 
-app.use(require("./content"));
-app.use(require("./usuario"));
 app.use(require("./login"));
-app.use(require("./form"));
-app.use(require("./track"));
-app.use(require("./tour"));
-app.use(require("./category"));
-app.use(require("./owner"));
 app.use(require("./agency"));
-app.use(require("./survey"));
-app.use(require("./action"));
-app.use(require("./answer"));
-app.use(require("./conference"));
-app.use(require("./image"));
-app.use(require("./invitation"));
-app.use(require("./setting"));
 app.use(require("./user"));
 app.use(require("./system"));
 app.use(require("./instance"));
 app.use(require("./root"));
-app.use(require("./assist"));
-app.use(require("./master"));
-app.use(require("./pack"));
-app.use(require("./plan"));
-app.use(require("./app"));
-app.use(require("./trans"));
-app.use(require("./guest"));
-app.use(require("./bucket"));
 app.use(require("./slack"));
 
 module.exports = app;

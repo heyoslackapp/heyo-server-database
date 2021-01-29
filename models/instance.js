@@ -70,7 +70,6 @@ instanceSchema.plugin(uniqueValidator, { message: "{PATH} debe ser unico" });
 instanceSchema.methods.toJSON = function () {
   let agencia = this;
   let instanceObject = agencia.toObject();
-  //delete conferenceObject.password;
   return instanceObject;
 };
 

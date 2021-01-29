@@ -6,8 +6,6 @@ const mongoose = require("mongoose");
 //const Server = require("./models/server");
 const http = require("http");
 
-const socketio = require("socket.io");
-const Sockets = require("./models/socket");
 
 //const serverSocket = new Server();
 //serverSocket.execute();
@@ -15,18 +13,16 @@ const Sockets = require("./models/socket");
 
 const app = express();
 const server = http.createServer(app);
-const io = socketio(server);
-new Sockets(io);
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
-
 const token = "xoxp-205419738197-205369546884-1687555101345-7eafe5b115b2827047a22d5b4fdd5101";
 const web = new WebClient(token);
 
 // This argument can be a channel ID, a DM ID, a MPDM ID, or a group ID
 const conversationId = '#react';
 
+/*
 (async () => {
   // See: https://api.slack.com/methods/chat.postMessage
   const res = await web.chat.postMessage({ channel: conversationId, text: 'Hello there' });
@@ -41,6 +37,7 @@ const conversationId = '#react';
   // `res` contains information about the posted message
   console.log('Message sent: ', res.ts);
 })();
+*/
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -52,7 +49,7 @@ app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials");
 
 hbs.registerHelper("owner", () => {
-  return "Pedro Alejandro Rojas Garcia";
+  return "";
 });
 
 
