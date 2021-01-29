@@ -3,7 +3,6 @@ const uniqueValidator = require("mongoose-unique-validator");
 
 mongoose.set('useFindAndModify', false);
 
-
  let Schema = mongoose.Schema;
 
  let documentIdValidos = {
@@ -15,16 +14,13 @@ mongoose.set('useFindAndModify', false);
     
     name:{
         type:String,
-        require:[true, 'Es necesario el name amigo!!']
     },
     address :{
         type:String,
-        required:[true, 'El Email es vital para vivir'],
         unique:true
     },
     email:{
         type:String,
-        required:[true, 'El Email es vital para vivir'],
         unique:true
     },
     phone:{
@@ -75,7 +71,6 @@ mongoose.set('useFindAndModify', false);
  agencySchema.methods.toJSON = function () {
         let agencia = this;
         let agencyObject = agencia.toObject();
-        //delete agencyObject.password;
         return agencyObject;
  }
 
