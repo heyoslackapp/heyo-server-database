@@ -1,36 +1,45 @@
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
-var randomColor = require('randomcolor'); // import the script
+var randomColor = require("randomcolor"); // import the script
 
 mongoose.set("useFindAndModify", false);
 
 let Schema = mongoose.Schema;
 
 let slackuserSchema = new Schema({
-  user_name: {
+  user: {
     type: String,
   },
-  user_id: {
+  channel: {
     type: String,
   },
-  team_id: {
+  state: {
     type: String,
   },
-  team_domain: {
+  team: {
     type: String,
   },
-  channel_id: {
+  mode: {
     type: String,
   },
-  channel_name: {
+  people: {
+    type: Number,
+  },
+  username: {
     type: String,
   },
-  text: {
+  avatar: {
     type: String,
   },
-  response_url: {
+  title: {
     type: String,
-  }
+  },
+  connections: {
+    type: Number,
+  },
+  datelimit: {
+    type: Date,
+  },
 });
 
 slackuserSchema.plugin(uniqueValidator, { message: "{PATH} debe ser unico" });

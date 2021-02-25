@@ -1,26 +1,13 @@
 require("./config/config");
-const { WebClient } = require('@slack/web-api');
-
 const express = require("express");
 const mongoose = require("mongoose");
-//const Server = require("./models/server");
 const http = require("http");
-
-
-//const serverSocket = new Server();
-//serverSocket.execute();
-
 
 const app = express();
 const server = http.createServer(app);
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
-const token = "xoxp-205419738197-205369546884-1687555101345-7eafe5b115b2827047a22d5b4fdd5101";
-const web = new WebClient(token);
-
-// This argument can be a channel ID, a DM ID, a MPDM ID, or a group ID
-const conversationId = '#react';
 
 /*
 (async () => {
@@ -52,7 +39,6 @@ hbs.registerHelper("owner", () => {
   return "";
 });
 
-
 mongoose
   .connect(process.env.urlDB, {
     useUnifiedTopology: true,
@@ -67,6 +53,6 @@ mongoose
     console.log(err);
   });
 
-  server.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
   console.log(process.env.PORT);
 });
