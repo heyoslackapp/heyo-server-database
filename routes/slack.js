@@ -75,12 +75,6 @@ app.post("/registeruser", (req, res) => {
       return { err, ok: false };
     }
 
-    return res.json({
-      ok: true,
-      userdata,
-    });
-
-    /*
     if (userdata) {
       Slackuser.findByIdAndUpdate(
         userdata._id,
@@ -121,7 +115,6 @@ app.post("/registeruser", (req, res) => {
         });
       });
     }
-    */
   });
 });
 
