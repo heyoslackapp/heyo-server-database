@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 
 moment = require("moment");
-const { v4: uuidv4 } = require("uuid");
 
 const { WebClient } = require("@slack/web-api");
 const token =
@@ -62,9 +61,9 @@ app.post("/slackUserLoadGrid", (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  console.log(req.body);
   res.json({
     ok: true,
+    ambiente: "test",
   });
 });
 
@@ -76,6 +75,12 @@ app.post("/registeruser", (req, res) => {
       return { err, ok: false };
     }
 
+    return res.json({
+      ok: true,
+      userdata,
+    });
+
+    /*
     if (userdata) {
       Slackuser.findByIdAndUpdate(
         userdata._id,
@@ -116,6 +121,7 @@ app.post("/registeruser", (req, res) => {
         });
       });
     }
+    */
   });
 });
 
