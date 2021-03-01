@@ -7,11 +7,11 @@ let urlDB;
 
 if (process.env.NODE_ENV === "dev") {
   urlDB =
-    "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/heyo?retryWrites=true";
+    "mongodb+srv://root:s98tiMpvCMki!T9@cluster0.u72ao.mongodb.net/heyo?retryWrites=true&w=majority";
 } else {
   //urlDB = process.env.MONGO_URI;
   urlDB =
-    "mongodb+srv://root:rWux8FHzOT7M9Zqf@cluufdb.rtkyv.mongodb.net/heyo?retryWrites=true";
+    "mongodb+srv://root:s98tiMpvCMki!T9@cluster0.u72ao.mongodb.net/heyo?retryWrites=true&w=majority";
 }
 
 process.env.urlDB = urlDB;
