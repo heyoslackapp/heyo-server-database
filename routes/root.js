@@ -48,10 +48,6 @@ app.get("/root/:id", (req, res) => {
   let userId = req.params.userId;
   let parametro = req.body;
 
-  // const start = parametro.start;
-  // const end = parametro.end;
-  //  date: { $gte: start, $lt: end }
-
   UserEvent.find({ conferenceId, userId })
     .populate("questionId")
     .populate("surveyId")
