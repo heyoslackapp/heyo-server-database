@@ -146,7 +146,7 @@ app.get("/conversationByUser", (req, res) => {
         {
           user: { $nin: usersExclude },
           connections: { $gt: 0 },
-          state: "2",
+          state: "1",
         },
         (err, result) => {
           if (err) {
