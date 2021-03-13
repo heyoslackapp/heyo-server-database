@@ -148,6 +148,7 @@ app.get("/conversationByUser", (req, res) => {
         {
           user: { $nin: usersExclude },
           connections: { $gt: 0 },
+          datelimit: { $gt: moment.now() },
         },
         (err, result) => {
           if (err) {
