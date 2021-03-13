@@ -191,7 +191,7 @@ app.post("/saveQuestion01", (req, res) => {
         userdata._id,
         { $set: { people: answer, connections: answer } },
         { new: true },
-        (err, result) => {
+        async (err, result) => {
           if (err) return err;
           return res.json({
             ok: true,

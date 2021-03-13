@@ -137,21 +137,20 @@ app.post("/conversation", (req, res) => {
         return { err, ok: false };
       }
 
-      console.log(userdata[0].avatar);
-      console.log(userdata);
-
       let conversation = new Conversation({
         usera: userdata[0]._id,
-        userb: userdata[1]._id,
+        codea: userdata[0].user,
         avatara: userdata[0].avatar,
+        userb: userdata[1]._id,
         avatarb: userdata[1].avatar,
+        codeb: userdata[1].user,
         state: 1,
         mode: "ok",
         created: moment.now(),
         updated: moment.now(),
       });
 
-      conversation.save((err, result) => {
+      conversation.save(async (err, result) => {
         if (err) {
           res.status(400).json({
             ok: false,
@@ -160,10 +159,127 @@ app.post("/conversation", (req, res) => {
           });
         }
 
-        res.json({
+        await Slackuser.findByIdAndUpdate(
+          userdata[0]._id,
+          {
+            $set: {
+              connections: parseInt(userdata[0].connections) - 1,
+            },
+          },
+          { new: true },
+          (err, result) => {
+            if (err) return err;
+          }
+        );
+
+        await Slackuser.findByIdAndUpdate(
+          userdata[1]._id,
+          {
+            $set: {
+              connections: parseInt(userdata[1].connections) - 1,
+            },
+          },
+          { new: true },
+          (err, result) => {
+            if (err) return err;
+          }
+        );
+
+        return res.json({
           ok: true,
           result,
         });
+      });
+    }
+  );
+});
+
+app.get("/conversationByUser", (req, res) => {
+  let p = req.query;
+
+  Conversation.find(
+    { $or: [{ codea: p.user }, { codea: p.user }] },
+    async (err, result) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      const usersExclude = [];
+
+      result.forEach((item) => {
+        usersExclude.push(item.codea);
+        usersExclude.push(item.codeb);
+      });
+
+      await Slackuser.find(
+        {
+          user: { $nin: usersExclude },
+          connections: { $gt: 2 },
+        },
+        (err, result) => {
+          if (err) {
+            return { err, ok: false };
+          }
+
+          return res.json({
+            ok: true,
+            result: result[0],
+            userx: p.user,
+            usery: result[0].user,
+          });
+        }
+      );
+    }
+  );
+});
+
+app.get("/findUserConversationByUser", (req, res) => {
+  let p = req.query;
+
+  Conversation.find(
+    { $or: [{ codea: p.user }, { codea: p.user }] },
+    async (err, result) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      result.forEach((item) => {
+        console.log(item.codea, item.codeb);
+      });
+
+      await Slackuser.find(
+        { $not: [{ user: "U013LS9KZ7S" }] },
+        (err, result) => {
+          if (err) {
+            return { err, ok: false };
+          }
+        }
+      );
+
+      return res.json({
+        ok: true,
+        result,
+      });
+    }
+  );
+});
+
+app.get("/testFind", (req, res) => {
+  let p = req.query;
+  const arrayUsers = ["U013LS9KZ7S"];
+  Slackuser.find(
+    {
+      user: { $nin: arrayUsers },
+      connections: { $gt: 2 },
+    },
+    (err, result) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      return res.json({
+        ok: true,
+        result: result[0],
       });
     }
   );
