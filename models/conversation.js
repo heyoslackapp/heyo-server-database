@@ -14,6 +14,12 @@ let conversationSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Slackuser",
   },
+  avatara: {
+    type: String,
+  },
+  avatarb: {
+    type: String,
+  },
   state: {
     type: Number,
   },

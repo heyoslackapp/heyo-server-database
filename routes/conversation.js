@@ -127,33 +127,46 @@ app.put("/conversation/:id", verificarToken, (req, res) => {
   });
 });
 
-app.post("/conversation", verificarToken, (req, res) => {
+app.post("/conversation", (req, res) => {
   let p = req.body;
-  // const { instanceId, _id: rootId } = req.usuario;
 
-  let conversation = new Conversation({
-    usera: p.usera,
-    userb: p.userb,
-    state: 1,
-    mode: "ok",
-    created: moment.now(),
-    update: moment.now(),
-  });
+  Slackuser.find(
+    { $or: [{ user: p.usera }, { user: p.userb }] },
+    (err, userdata) => {
+      if (err) {
+        return { err, ok: false };
+      }
 
-  conversation.save((err, result) => {
-    if (err) {
-      res.status(400).json({
-        ok: false,
-        err,
-        message: " Falla en los parametros",
+      console.log(userdata[0].avatar);
+      console.log(userdata);
+
+      let conversation = new Conversation({
+        usera: userdata[0]._id,
+        userb: userdata[1]._id,
+        avatara: userdata[0].avatar,
+        avatarb: userdata[1].avatar,
+        state: 1,
+        mode: "ok",
+        created: moment.now(),
+        updated: moment.now(),
+      });
+
+      conversation.save((err, result) => {
+        if (err) {
+          res.status(400).json({
+            ok: false,
+            err,
+            message: " Falla en los parametros",
+          });
+        }
+
+        res.json({
+          ok: true,
+          result,
+        });
       });
     }
-
-    res.json({
-      ok: true,
-      result,
-    });
-  });
+  );
 });
 
 app.post("/usuarixDetails/:userId", verificarToken, (req, res) => {

@@ -63,7 +63,7 @@ app.post("/slackUserLoadGrid", (req, res) => {
 app.get("/test", (req, res) => {
   res.json({
     ok: true,
-    ambiente: "test",
+    ambiente: "tesssst",
   });
 });
 
