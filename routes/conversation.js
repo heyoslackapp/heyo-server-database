@@ -214,7 +214,7 @@ app.get("/conversationByUser", (req, res) => {
       await Slackuser.find(
         {
           user: { $nin: usersExclude },
-          connections: { $gt: 2 },
+          connections: { $gt: 0 },
         },
         (err, result) => {
           if (err) {
