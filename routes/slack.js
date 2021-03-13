@@ -179,6 +179,7 @@ app.post("/conversation", (req, res) => {
           });
         }
 
+        /*
         await Slackuser.findByIdAndUpdate(
           userdata[0]._id,
           {
@@ -207,7 +208,7 @@ app.post("/conversation", (req, res) => {
           (err, result) => {
             if (err) return err;
           }
-        );
+        ); */
 
         return res.json({
           ok: true,
