@@ -134,8 +134,8 @@ app.post("/conversation", verificarToken, (req, res) => {
   let conversation = new Conversation({
     usera: p.usera,
     userb: p.userb,
-    state: p.state,
-    mode: p.mode,
+    state: 1,
+    mode: "ok",
     created: moment.now(),
     update: moment.now(),
   });

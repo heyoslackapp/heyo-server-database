@@ -155,7 +155,7 @@ app.post("/userBusy", (req, res) => {
     }
 
     if (userdata && userdata.connections > 0) {
-      let datelimit = moment().add(4, "days");
+      //let datelimit = moment().add(4, "days");
       let connections = parseInt(userdata.connections) - 1;
 
       Slackuser.findByIdAndUpdate(
