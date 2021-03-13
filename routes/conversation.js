@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const { verificarToken, isAdmin } = require("../middlewares/autenticacion");
+const { verificarToken } = require("../middlewares/autenticacion");
 var moment = require("moment-timezone");
 
 const Slackuser = require("../models/slackuser");
