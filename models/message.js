@@ -7,7 +7,8 @@ let Schema = mongoose.Schema;
 
 let messageSchema = new Schema({
   user: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Slackuser",
   },
   text: {
     type: String,
