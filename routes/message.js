@@ -32,6 +32,12 @@ app.post("/messageLoadGrid", (req, res) => {
       };
     }
 
+    if (!parametro.conversationId) {
+      return res.json({
+        ok: false,
+      });
+    }
+
     console.log(busqueda);
 
     Message.find(busqueda)
