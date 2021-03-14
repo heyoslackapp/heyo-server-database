@@ -35,7 +35,7 @@ app.post("/messageLoadGrid", (req, res) => {
       .skip(0)
       .limit(rows)
       .sort([[parametro.sidx, AscOrDesc]])
-      .populate("user")
+      .populate("conversation")
       .exec((err, result) => {
         if (err) {
           return res.status(400).json({
