@@ -146,9 +146,9 @@ app.get("/conversationByUser", (req, res) => {
         {
           user: { $nin: usersExclude },
           connections: { $gt: 0 },
-          state: "1",
+          state: { $ne: "0" },
           datelimit: {
-            $gte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+            $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
           },
         },
         (err, result) => {
@@ -215,6 +215,32 @@ app.get("/testFind", (req, res) => {
       return res.json({
         ok: true,
         result: result[0],
+      });
+    }
+  );
+});
+
+app.get("/testFind2", (req, res) => {
+  //let p = req.query;
+  //const arrayUsers = ["U013LS9KZ7S"];
+
+  Slackuser.find(
+    {
+      user: { $nin: usersExclude },
+      connections: { $gt: 0 },
+      state: { $ne: "0" },
+      datelimit: {
+        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+      },
+    },
+    (err, result) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      return res.json({
+        ok: true,
+        result,
       });
     }
   );
