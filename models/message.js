@@ -5,7 +5,7 @@ mongoose.set("useFindAndModify", false);
 
 let Schema = mongoose.Schema;
 
-let conversationSchema = new Schema({
+let messageSchema = new Schema({
   user: {
     type: String,
   },
@@ -26,14 +26,14 @@ let conversationSchema = new Schema({
   },
 });
 
-conversationSchema.plugin(uniqueValidator, {
+messageSchema.plugin(uniqueValidator, {
   message: "{PATH} debe ser unico",
 });
 
-conversationSchema.methods.toJSON = function () {
+messageSchema.methods.toJSON = function () {
   let agencia = this;
   let instanceObject = agencia.toObject();
   return instanceObject;
 };
 
-module.exports = mongoose.model("Conversation", conversationSchema);
+module.exports = mongoose.model("Message", messageSchema);
