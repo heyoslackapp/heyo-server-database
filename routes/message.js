@@ -66,30 +66,34 @@ app.post("/message", (req, res) => {
       return { err, ok: false };
     }
 
-    console.log(userdata);
-
-    let message = new Message({
-      text: p.text,
-      channel: p.channel,
-      team: p.team,
-      user: p.user,
-      //conversation: userdata[0]._id,
-    });
-
-    message.save(async (err, result) => {
-      if (err) {
-        res.status(400).json({
-          ok: false,
-          err,
-          message: " Falla en los parametros",
-        });
-      }
-
-      return res.json({
-        ok: true,
-        result,
+    if (userdata[0]._id) {
+      let message = new Message({
+        text: p.text,
+        channel: p.channel,
+        team: p.team,
+        user: p.user,
+        conversation: userdata[0]._id,
       });
-    });
+
+      message.save(async (err, result) => {
+        if (err) {
+          res.status(400).json({
+            ok: false,
+            err,
+            message: " Falla en los parametros",
+          });
+        }
+
+        return res.json({
+          ok: true,
+          result,
+        });
+      });
+    } else {
+      return res.json({
+        ok: false,
+      });
+    }
   });
 });
 
