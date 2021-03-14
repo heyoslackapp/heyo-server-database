@@ -66,12 +66,14 @@ app.post("/message", (req, res) => {
       return { err, ok: false };
     }
 
+    console.log(userdata);
+
     let message = new Message({
       text: p.text,
       channel: p.channel,
       team: p.team,
       user: p.user,
-      conversation: userdata[0]._id,
+      //conversation: userdata[0]._id,
     });
 
     message.save(async (err, result) => {
