@@ -32,6 +32,8 @@ app.post("/messageLoadGrid", (req, res) => {
       };
     }
 
+    console.log(busqueda);
+
     Message.find(busqueda)
       .skip(0)
       .limit(rows)
