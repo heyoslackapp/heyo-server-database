@@ -20,6 +20,17 @@ app.post("/messageLoadGrid", (req, res) => {
 
     let busqueda = { archived: null };
 
+    if (
+      parametro.conversation &&
+      parametro.conversation !== "undefined" &&
+      parametro.conversation.length > 0
+    ) {
+      busqueda = {
+        ...busqueda,
+        conversation,
+      };
+    }
+
     Message.find(busqueda)
       .skip(0)
       .limit(rows)
