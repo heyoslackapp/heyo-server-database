@@ -83,6 +83,7 @@ app.post("/message", (req, res) => {
         team: p.team,
         user: p.user,
         conversation: userdata[0]._id,
+        created: moment.now(),
       });
 
       message.save(async (err, result) => {

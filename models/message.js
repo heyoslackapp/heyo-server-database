@@ -21,6 +21,9 @@ let messageSchema = new Schema({
   channel: {
     type: String,
   },
+  created: {
+    type: Date,
+  },
   conversation: {
     type: Schema.Types.ObjectId,
     ref: "Conversation",
