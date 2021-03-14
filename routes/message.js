@@ -30,9 +30,7 @@ app.post("/messageLoadGrid", (req, res) => {
         ...busqueda,
         conversation: parametro.conversationId,
       };
-    }
-
-    if (!parametro.conversationId) {
+    } else {
       return res.json({
         ok: false,
       });
