@@ -10,5 +10,6 @@ app.use(require("./root"));
 app.use(require("./interactive"));
 app.use(require("./slack"));
 app.use(require("./conversation"));
+app.use(require("./message"));
 
 module.exports = app;
