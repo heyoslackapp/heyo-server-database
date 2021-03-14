@@ -98,6 +98,7 @@ app.post("/registeruser", (req, res) => {
         channel,
         team,
         state: users.STATE.onhold,
+        mode: "chat",
       });
 
       slackuser.save((err, result) => {
