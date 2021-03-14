@@ -22,7 +22,8 @@ let messageSchema = new Schema({
     type: String,
   },
   conversation: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Conversation",
   },
 });
 
