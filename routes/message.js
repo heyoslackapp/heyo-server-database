@@ -3,8 +3,8 @@ const app = express();
 const { verificarToken } = require("../middlewares/autenticacion");
 var moment = require("moment-timezone");
 
-const Slackuser = require("../models/slackuser");
 const Message = require("../models/message");
+const Conversation = require("../models/conversation");
 
 app.post("/messageLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -20,7 +20,7 @@ app.post("/messageLoadGrid", (req, res) => {
 
     let busqueda = { archived: null };
 
-    Conversation.find(busqueda)
+    Message.find(busqueda)
       .skip(0)
       .limit(rows)
       .sort([[parametro.sidx, AscOrDesc]])
@@ -61,7 +61,7 @@ app.get("/messageByChannel", (req, res) => {
 app.post("/message", (req, res) => {
   let p = req.body;
 
-  conversation.find({ channel: p.channel }, (err, userdata) => {
+  Conversation.find({ channel: p.channel }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
     }
@@ -91,7 +91,7 @@ app.post("/message", (req, res) => {
   });
 });
 
-app.put("/conversationChannel/:id", verificarToken, (req, res) => {
+app.put("/messageChannel/:id", verificarToken, (req, res) => {
   // console.log(req.usuario);
   let id = req.params.id;
   let body = _.pick(req.body, ["channel"]);
