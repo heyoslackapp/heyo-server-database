@@ -5,6 +5,7 @@ var moment = require("moment-timezone");
 
 const Message = require("../models/message");
 const Conversation = require("../models/conversation");
+const slackuser = require("../models/slackuser");
 
 app.post("/messageLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -77,27 +78,33 @@ app.post("/message", (req, res) => {
     }
 
     if (userdata.length > 0) {
-      let message = new Message({
-        text: p.text,
-        channel: p.channel,
-        team: p.team,
-        user: p.user,
-        conversation: userdata[0]._id,
-        created: moment.now(),
-      });
-
-      message.save(async (err, result) => {
+      slackuser.find({ user: p.user }, (err, userinfo) => {
         if (err) {
-          res.status(400).json({
-            ok: false,
-            err,
-            message: " Falla en los parametros",
-          });
+          return { err, ok: false };
         }
 
-        return res.json({
-          ok: true,
-          result,
+        let message = new Message({
+          text: p.text,
+          channel: p.channel,
+          team: p.team,
+          user: userinfo[0]._id,
+          conversation: userdata[0]._id,
+          created: moment.now(),
+        });
+
+        message.save(async (err, result) => {
+          if (err) {
+            res.status(400).json({
+              ok: false,
+              err,
+              message: " Falla en los parametros",
+            });
+          }
+
+          return res.json({
+            ok: true,
+            result,
+          });
         });
       });
     } else {
