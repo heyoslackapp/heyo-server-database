@@ -28,7 +28,7 @@ app.post("/messageLoadGrid", (req, res) => {
     ) {
       busqueda = {
         ...busqueda,
-        conversation: conversationId,
+        conversation: parametro.conversationId,
       };
     }
 
