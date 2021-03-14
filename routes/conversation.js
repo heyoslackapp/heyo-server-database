@@ -391,6 +391,7 @@ app.post("/conversation", (req, res) => {
         mode: "ok",
         created: moment.now(),
         updated: moment.now(),
+        channel: p.channel,
       });
 
       conversation.save(async (err, result) => {
@@ -439,6 +440,26 @@ app.post("/conversation", (req, res) => {
       });
     }
   );
+});
+
+app.put("/conversationChannel/:id", verificarToken, (req, res) => {
+  // console.log(req.usuario);
+  let id = req.params.id;
+  let body = _.pick(req.body, ["channel"]);
+
+  Conversation.findByIdAndUpdate(id, body, { new: true }, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        ok: false,
+        err,
+      });
+    }
+
+    res.json({
+      ok: true,
+      user,
+    });
+  });
 });
 
 module.exports = app;

@@ -44,6 +44,9 @@ let conversationSchema = new Schema({
   team: {
     type: String,
   },
+  channel: {
+    type: String,
+  },
 });
 
 conversationSchema.plugin(uniqueValidator, {
