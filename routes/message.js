@@ -22,13 +22,13 @@ app.post("/messageLoadGrid", (req, res) => {
     let busqueda = { archived: null };
 
     if (
-      parametro.conversation &&
-      parametro.conversation !== "undefined" &&
-      parametro.conversation.length > 0
+      parametro.conversationId &&
+      parametro.conversationId !== "undefined" &&
+      parametro.conversationId.length > 0
     ) {
       busqueda = {
         ...busqueda,
-        conversation,
+        conversation: conversationId,
       };
     }
 
