@@ -61,10 +61,27 @@ app.post("/slackUserLoadGrid", (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  res.json({
-    ok: true,
-    ambiente: "tesssst",
-  });
+  let userx = "U6VKNKVRC";
+  let usery = "U6TMF4D6J";
+  let userz = "U01KT6PK1K8";
+
+  web.conversations
+    .open({
+      users: `${userx},${usery},${userz}`,
+      return_im: false,
+    })
+    .then((result) => {
+      web.chat.postMessage({
+        channel: result.channel.id,
+        text: `Welcome to Heyo 3 :wave: <@${userx}>  <@${usery}>`,
+      });
+
+      res.json({
+        ok: true,
+        ambiente: "tesssst",
+        result,
+      });
+    });
 });
 
 app.post("/registeruser", (req, res) => {

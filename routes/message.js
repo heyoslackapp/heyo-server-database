@@ -80,6 +80,7 @@ app.get("/messageByChannel", (req, res) => {
 
 app.post("/message", (req, res) => {
   let p = req.body;
+  console.log(p);
   Conversation.find({ channel: p.channel }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
