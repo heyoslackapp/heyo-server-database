@@ -6,6 +6,11 @@ var moment = require("moment-timezone");
 const Slackuser = require("../models/slackuser");
 const Conversation = require("../models/conversation");
 
+const { WebClient } = require("@slack/web-api");
+const token =
+  "xoxp-224498606455-233668675862-1749324479827-8f6f4e4cb1b6c2cc328bfa957109484d";
+const web = new WebClient(token);
+
 app.post("/conversationLoadGrid", (req, res) => {
   let parametro = req.body;
 
@@ -460,6 +465,86 @@ app.put("/conversationChannel/:id", verificarToken, (req, res) => {
       user,
     });
   });
+});
+
+app.get("/conversationByUserByCront", (req, res) => {
+  console.log(new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`));
+
+  let userx = "";
+  let usery = "";
+  let userz = "U01KT6PK1K8";
+  Slackuser.find(
+    {
+      connections: { $gt: 0 },
+      state: { $ne: "0" },
+      datelimit: {
+        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+      },
+    },
+    (err, useradata) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      useradata.forEach((userA) => {
+        Conversation.find(
+          { $or: [{ codea: userA.user }, { codea: userA.user }] },
+          async (err, result) => {
+            if (err) {
+              return { err, ok: false };
+            }
+
+            const usersExclude = [];
+
+            result.forEach((item) => {
+              usersExclude.push(item.codea);
+              usersExclude.push(item.codeb);
+            });
+
+            await Slackuser.find(
+              {
+                user: { $nin: usersExclude },
+                connections: { $gt: 0 },
+                state: { $ne: "0" },
+                datelimit: {
+                  $lte: new Date(
+                    `${moment().format("YYYY-MM-DD")}T00:00:00.000Z`
+                  ),
+                },
+              },
+              (err, result) => {
+                if (err) {
+                  return { err, ok: false };
+                }
+
+                userx = userA.user;
+                usery = result[0].user;
+
+                console.log(userx, usery);
+
+                web.conversations
+                  .open({
+                    users: `${userx},${usery},${userz}`,
+                    return_im: false,
+                  })
+                  .then((result) => {
+                    web.chat.postMessage({
+                      channel: result.channel.id,
+                      text: `Welcome to Heyo avanzada :wave: <@${userx}>  <@${usery}>`,
+                    });
+                  });
+              }
+            );
+          }
+        );
+      });
+
+      return res.json({
+        ok: true,
+        useradata,
+      });
+    }
+  );
 });
 
 module.exports = app;
