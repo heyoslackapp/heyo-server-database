@@ -20,6 +20,13 @@ let conversationSchema = new Schema({
   codeb: {
     type: String,
   },
+  interactions: {
+    type: Number,
+    default: 0,
+  },
+  lastinteraction: {
+    type: Date,
+  },
   avatara: {
     type: String,
   },

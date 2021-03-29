@@ -86,39 +86,52 @@ app.post("/message", (req, res) => {
       return { err, ok: false };
     }
 
-    console.log(userdata);
-
     if (userdata.length > 0) {
       slackuser.find({ user: p.user }, (err, userinfo) => {
         if (err) {
           return { err, ok: false };
         }
 
-        console.log(userinfo);
+        Conversation.findByIdAndUpdate(
+          userdata[0]._id,
+          {
+            lastinteraction: moment.now(),
+            interactions: userdata[0].interactions + 1,
+          },
+          { new: true },
+          (err, result) => {
+            if (err) {
+              return res.status(400).json({
+                ok: false,
+                err,
+              });
+            }
 
-        let message = new Message({
-          text: p.text,
-          channel: p.channel,
-          team: p.team,
-          user: userinfo[0]._id,
-          conversation: userdata[0]._id,
-          created: moment.now(),
-        });
+            let message = new Message({
+              text: p.text,
+              channel: p.channel,
+              team: p.team,
+              user: userinfo[0]._id,
+              conversation: userdata[0]._id,
+              created: moment.now(),
+            });
 
-        message.save(async (err, result) => {
-          if (err) {
-            res.status(400).json({
-              ok: false,
-              err,
-              message: " Falla en los parametros",
+            message.save(async (err, result) => {
+              if (err) {
+                res.status(400).json({
+                  ok: false,
+                  err,
+                  message: " Falla en los parametros",
+                });
+              }
+
+              return res.json({
+                ok: true,
+                result,
+              });
             });
           }
-
-          return res.json({
-            ok: true,
-            result,
-          });
-        });
+        );
       });
     } else {
       return res.json({
