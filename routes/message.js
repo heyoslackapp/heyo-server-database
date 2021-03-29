@@ -86,11 +86,15 @@ app.post("/message", (req, res) => {
       return { err, ok: false };
     }
 
+    console.log(userdata);
+
     if (userdata.length > 0) {
       slackuser.find({ user: p.user }, (err, userinfo) => {
         if (err) {
           return { err, ok: false };
         }
+
+        console.log(userinfo);
 
         let message = new Message({
           text: p.text,
