@@ -138,6 +138,8 @@ app.post("/registeruser", (req, res) => {
 
 app.post("/userInactive", (req, res) => {
   const { user } = req.body;
+  console.log("userInactive");
+  console.log(user);
   Slackuser.findOne({ user }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
