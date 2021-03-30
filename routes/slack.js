@@ -166,7 +166,6 @@ app.post("/userInactive", (req, res) => {
     }
   });
 });
-
 app.post("/userBusy", (req, res) => {
   const { user } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
