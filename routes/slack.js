@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 
 moment = require("moment");
-
 const { WebClient } = require("@slack/web-api");
 const token =
   "xoxp-224498606455-233668675862-1749324479827-8f6f4e4cb1b6c2cc328bfa957109484d";
