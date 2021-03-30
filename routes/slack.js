@@ -9,7 +9,6 @@ const web = new WebClient(token);
 
 const Root = require("../models/root");
 const Slackuser = require("../models/slackuser");
-
 const users = Object.freeze({
   STATE: {
     disabled: "0",
