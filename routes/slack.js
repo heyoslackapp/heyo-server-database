@@ -390,7 +390,7 @@ app.post("/validateChannel", async (req, res) => {
         });
       }
     });
-
+    // ok
     if (resultado === false) {
       return res.json({
         ok: false,
