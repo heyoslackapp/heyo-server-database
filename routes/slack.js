@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const axios = require("axios");
 
 moment = require("moment");
 const { WebClient } = require("@slack/web-api");
@@ -20,6 +21,16 @@ const users = Object.freeze({
     zoom: "zoom",
   },
 });
+
+const slackConsole = async (text) => {
+  await axios
+    .post(
+      "https://hooks.slack.com/services/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",
+      { text }
+    )
+    .then(function (response) {})
+    .catch(function (error) {});
+};
 
 app.post("/slackUserLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -82,25 +93,30 @@ app.get("/test", (req, res) => {
     });
 });
 
+//Esta funcion se llama siempre que un usuario se une al grupo
 app.post("/registeruser", (req, res) => {
-  const { user, channel, team } = req.body;
+  const { user, channel, team, avatar, title, username } = req.body;
+
   Slackuser.findOne({ user }, (err, userdata) => {
     if (err) {
-      console.log(err);
+      slackConsole(err);
       return { err, ok: false };
     }
 
     if (userdata) {
+      slackConsole("El usuario se encuentra ya registrado");
       Slackuser.findByIdAndUpdate(
         userdata._id,
         { $set: { state: users.STATE.onhold } },
         { new: true },
         (err, result) => {
           if (err) {
-            console.log(err);
+            slackConsole("Error Actualizando el usuario");
+            slackConsole(err);
             return err;
           }
-          console.log(result);
+
+          slackConsole("Usuario Actualizado con exito");
           return res.json({
             ok: true,
             result,
@@ -108,16 +124,22 @@ app.post("/registeruser", (req, res) => {
         }
       );
     } else {
+      slackConsole("Se registrara el usuario");
       let slackuser = new Slackuser({
         user,
         channel,
         team,
+        avatar,
+        title,
+        username,
         state: users.STATE.onhold,
         mode: "chat",
       });
 
       slackuser.save((err, result) => {
         if (err) {
+          slackConsole("Error Registrando el Usuario.");
+          slackConsole(err);
           res.status(400).json({
             ok: false,
             err,
@@ -125,6 +147,7 @@ app.post("/registeruser", (req, res) => {
           });
         }
 
+        slackConsole("Usuario Registrado con exito!.");
         res.json({
           ok: true,
           result,
@@ -134,10 +157,8 @@ app.post("/registeruser", (req, res) => {
   });
 });
 
-app.post("/userInactive", (req, res) => {
-  const { user } = req.body;
-  console.log("userInactive");
-  console.log(user);
+app.post("/saveUserInfo", (req, res) => {
+  const { user, username, avatar, title } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
@@ -146,7 +167,7 @@ app.post("/userInactive", (req, res) => {
     if (userdata) {
       Slackuser.findByIdAndUpdate(
         userdata._id,
-        { $set: { state: users.STATE.disabled } },
+        { $set: { title, username, avatar } },
         { new: true },
         (err, result) => {
           if (err) return err;
@@ -164,6 +185,40 @@ app.post("/userInactive", (req, res) => {
     }
   });
 });
+
+app.post("/userInactive", (req, res) => {
+  const { user } = req.body;
+  slackConsole("Se buscara desactivar un usuario");
+  Slackuser.findOne({ user }, (err, userdata) => {
+    if (err) {
+      slackConsole("Error el usuario no existe");
+      return { err, ok: false };
+    }
+
+    if (userdata) {
+      Slackuser.findByIdAndUpdate(
+        userdata._id,
+        { $set: { state: users.STATE.disabled } },
+        { new: true },
+        (err, result) => {
+          if (err) return err;
+          slackConsole("El usuario fue desactivado EXITOSAMENTE!!");
+          return res.json({
+            ok: true,
+            result,
+          });
+        }
+      );
+    } else {
+      slackConsole("Error Dedactivando el usuario");
+      res.json({
+        ok: false,
+        userdata,
+      });
+    }
+  });
+});
+
 app.post("/userBusy", (req, res) => {
   const { user } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
@@ -200,16 +255,23 @@ app.post("/saveQuestion01", (req, res) => {
   const { user, answer } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
     if (err) {
+      slackConsole("Error el usuario no se encontro en la base de dato");
       return { err, ok: false };
     }
 
     if (userdata) {
+      slackConsole(
+        "El usuario Existe en la base de datos se actualizaran los datos"
+      );
       Slackuser.findByIdAndUpdate(
         userdata._id,
         { $set: { people: answer, connections: answer } },
         { new: true },
         async (err, result) => {
           if (err) return err;
+          slackConsole(
+            `El usuario fue actualizado con exito con ${answer} conexiones`
+          );
           return res.json({
             ok: true,
             result,
@@ -220,78 +282,6 @@ app.post("/saveQuestion01", (req, res) => {
       res.json({
         ok: false,
         userdata,
-      });
-    }
-  });
-});
-
-app.post("/saveUserInfo", (req, res) => {
-  const { user, username, avatar, title } = req.body;
-  Slackuser.findOne({ user }, (err, userdata) => {
-    if (err) {
-      return { err, ok: false };
-    }
-
-    if (userdata) {
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        { $set: { title, username, avatar } },
-        { new: true },
-        (err, result) => {
-          if (err) return err;
-          return res.json({
-            ok: true,
-            result,
-          });
-        }
-      );
-    } else {
-      res.json({
-        ok: false,
-        userdata,
-      });
-    }
-  });
-});
-
-app.post("/saveQuestion02", (req, res) => {
-  const { user, answer } = req.body;
-  Slackuser.findOne({ user }, (err, userdata) => {
-    if (err) {
-      return { err, ok: false };
-    }
-
-    if (userdata) {
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        { $set: { mode: answer } },
-        { new: true },
-        (err, result) => {
-          if (err) return err;
-
-          heyoGrou({ user, mode: answer, res }).then((resultado) => {
-            if (resultado) {
-              res.json({
-                ok: true,
-                userx: resultado,
-                usery: user,
-              });
-            } else {
-              res.json({
-                ok: false,
-                userx: null,
-                usery: null,
-              });
-            }
-          });
-        }
-      );
-    } else {
-      res.json({
-        ok: false,
-        userdata,
-        userx: null,
-        usery: null,
       });
     }
   });

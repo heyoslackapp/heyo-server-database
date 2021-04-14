@@ -11,6 +11,16 @@ const token =
   "xoxp-224498606455-233668675862-1749324479827-8f6f4e4cb1b6c2cc328bfa957109484d";
 const web = new WebClient(token);
 
+const slackConsole = async (text) => {
+  await axios
+    .post(
+      "https://hooks.slack.com/services/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",
+      { text }
+    )
+    .then(function (response) {})
+    .catch(function (error) {});
+};
+
 app.post("/conversationLoadGrid", (req, res) => {
   let parametro = req.body;
 
@@ -142,16 +152,22 @@ app.get("/conversationByUser", (req, res) => {
 
       const usersExclude = [];
 
+      slackConsole(
+        `Se encontraron ${result.length} conversaciones de este usuario`
+      );
+
       result.forEach((item) => {
         usersExclude.push(item.codea);
         usersExclude.push(item.codeb);
       });
 
+      console.log(usersExclude);
+
       await Slackuser.find(
         {
           user: { $nin: usersExclude },
-          connections: { $gt: 0 },
-          state: { $ne: "0" },
+          connections: { $gt: 0 }, // conexiones mayor a 0
+          state: { $ne: "0" }, // status Activo
           datelimit: {
             $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
           },
