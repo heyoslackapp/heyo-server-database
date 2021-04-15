@@ -107,7 +107,14 @@ app.post("/registeruser", (req, res) => {
       slackConsole("El usuario se encuentra ya registrado");
       Slackuser.findByIdAndUpdate(
         userdata._id,
-        { $set: { state: users.STATE.onhold } },
+        {
+          $set: {
+            state: users.STATE.onhold,
+            people: 6,
+            connections: 6,
+            datelimit: moment().subtract(4, "day"),
+          },
+        },
         { new: true },
         (err, result) => {
           if (err) {
@@ -134,6 +141,9 @@ app.post("/registeruser", (req, res) => {
         username,
         state: users.STATE.onhold,
         mode: "chat",
+        people: 6,
+        connections: 6,
+        datelimit: moment().subtract(4, "day"),
       });
 
       slackuser.save((err, result) => {
@@ -220,7 +230,7 @@ app.post("/userInactive", (req, res) => {
 });
 
 app.post("/userBusy", (req, res) => {
-  const { user } = req.body;
+  const { user, bot } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
@@ -228,11 +238,10 @@ app.post("/userBusy", (req, res) => {
 
     if (userdata && userdata.connections > 0) {
       let datelimit = moment.now();
-      let connections = parseInt(userdata.connections) - 1;
 
       Slackuser.findByIdAndUpdate(
         userdata._id,
-        { $set: { state: users.STATE.connected, datelimit, connections } },
+        { $set: { state: users.STATE.connected, datelimit, bot } },
         { new: true },
         (err, result) => {
           if (err) return err;
@@ -253,38 +262,30 @@ app.post("/userBusy", (req, res) => {
 
 app.post("/saveQuestion01", (req, res) => {
   const { user, answer } = req.body;
-  Slackuser.findOne({ user }, (err, userdata) => {
-    if (err) {
-      slackConsole("Error el usuario no se encontro en la base de dato");
-      return { err, ok: false };
-    }
+  console.log(req.body);
 
-    if (userdata) {
-      slackConsole(
-        "El usuario Existe en la base de datos se actualizaran los datos"
-      );
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        { $set: { people: answer, connections: answer } },
-        { new: true },
-        async (err, result) => {
-          if (err) return err;
-          slackConsole(
-            `El usuario fue actualizado con exito con ${answer} conexiones`
-          );
-          return res.json({
-            ok: true,
-            result,
-          });
-        }
-      );
-    } else {
-      res.json({
-        ok: false,
+  Slackuser.findOneAndUpdate(
+    { user },
+    {
+      $set: {
+        people: answer,
+        connections: answer,
+        datelimit: moment().subtract(4, "day"),
+      },
+    },
+    { new: true },
+    async (err, userdata) => {
+      if (err) {
+        slackConsole("Error el usuario no se encontro en la base de dato");
+        return { err, ok: false };
+      }
+
+      return res.json({
+        ok: true,
         userdata,
       });
     }
-  });
+  );
 });
 
 app.post("/finduser", (req, res) => {
@@ -435,6 +436,16 @@ const findUserByMode = async ({ user, mode }) => {
     "modo:",
     mode
   );
+  return await Slackuser.find(
+    { mode, state: "1", user: { $ne: user } },
+    (err, result) => {
+      if (err) return err;
+      return result;
+    }
+  );
+};
+
+const findUserByCron = async ({ use }) => {
   return await Slackuser.find(
     { mode, state: "1", user: { $ne: user } },
     (err, result) => {
