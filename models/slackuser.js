@@ -40,6 +40,9 @@ let slackuserSchema = new Schema({
   datelimit: {
     type: Date,
   },
+  bot: {
+    type: String,
+  },
 });
 
 slackuserSchema.plugin(uniqueValidator, { message: "{PATH} debe ser unico" });

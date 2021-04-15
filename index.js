@@ -8,7 +8,7 @@ const server = http.createServer(app);
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
-
+//const { addRows } = require("./database/database");
 /*
 (async () => {
   // See: https://api.slack.com/methods/chat.postMessage
@@ -52,6 +52,8 @@ mongoose
     console.log("error pedrito");
     console.log(err);
   });
+
+//addRows();
 
 server.listen(process.env.PORT, () => {
   console.log(process.env.PORT);

@@ -151,7 +151,7 @@ app.get("/conversationByUser", (req, res) => {
         return { err, ok: false };
       }
 
-      const usersExclude = [];
+      const usersExclude = [p.user];
 
       slackConsole(
         `Se encontraron ${result.length} conversaciones de este usuario`
@@ -161,8 +161,6 @@ app.get("/conversationByUser", (req, res) => {
         usersExclude.push(item.codea);
         usersExclude.push(item.codeb);
       });
-
-      console.log(usersExclude);
 
       await Slackuser.find(
         {
@@ -178,11 +176,14 @@ app.get("/conversationByUser", (req, res) => {
             return { err, ok: false };
           }
 
+          // console.log(result);
+
           return res.json({
             ok: true,
             result: result[0],
             userx: p.user,
             usery: result[0].user,
+            bot: result[0].bot,
           });
         }
       );
@@ -429,7 +430,7 @@ app.post("/conversation", (req, res) => {
           userdata[0]._id,
           {
             $set: {
-              // connections: parseInt(userdata[0].connections) - 1,
+              connections: parseInt(userdata[0].connections) - 1,
               datelimit: moment.now(),
               state: "2",
             },
@@ -444,7 +445,7 @@ app.post("/conversation", (req, res) => {
           userdata[1]._id,
           {
             $set: {
-              // connections: parseInt(userdata[1].connections) - 1,
+              connections: parseInt(userdata[1].connections) - 1,
               datelimit: moment.now(),
               state: "2",
             },
@@ -484,12 +485,9 @@ app.put("/conversationChannel/:id", verificarToken, (req, res) => {
   });
 });
 
-app.get("/conversationByUserByCront", (req, res) => {
-  console.log(new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`));
-
-  let userx = "";
-  let usery = "";
-  let userz = "U01KT6PK1K8";
+app.post("/conversationByUserByCront", (req, res) => {
+  console.log("consultando");
+  console.log(moment.now());
   Slackuser.find(
     {
       connections: { $gt: 0 },
@@ -503,58 +501,7 @@ app.get("/conversationByUserByCront", (req, res) => {
         return { err, ok: false };
       }
 
-      useradata.forEach((userA) => {
-        Conversation.find(
-          { $or: [{ codea: userA.user }, { codea: userA.user }] },
-          async (err, result) => {
-            if (err) {
-              return { err, ok: false };
-            }
-
-            const usersExclude = [];
-
-            result.forEach((item) => {
-              usersExclude.push(item.codea);
-              usersExclude.push(item.codeb);
-            });
-
-            await Slackuser.find(
-              {
-                user: { $nin: usersExclude },
-                connections: { $gt: 0 },
-                state: { $ne: "0" },
-                datelimit: {
-                  $lte: new Date(
-                    `${moment().format("YYYY-MM-DD")}T00:00:00.000Z`
-                  ),
-                },
-              },
-              (err, result) => {
-                if (err) {
-                  return { err, ok: false };
-                }
-
-                userx = userA.user;
-                usery = result[0].user;
-
-                console.log(userx, usery);
-
-                web.conversations
-                  .open({
-                    users: `${userx},${usery},${userz}`,
-                    return_im: false,
-                  })
-                  .then((result) => {
-                    web.chat.postMessage({
-                      channel: result.channel.id,
-                      text: `Welcome to Heyo avanzada :wave: <@${userx}>  <@${usery}>`,
-                    });
-                  });
-              }
-            );
-          }
-        );
-      });
+      console.log(useradata);
 
       return res.json({
         ok: true,
