@@ -486,8 +486,6 @@ app.put("/conversationChannel/:id", verificarToken, (req, res) => {
 });
 
 app.post("/conversationByUserByCront", (req, res) => {
-  console.log("consultando");
-  console.log(moment.now());
   Slackuser.find(
     {
       connections: { $gt: 0 },
@@ -500,8 +498,6 @@ app.post("/conversationByUserByCront", (req, res) => {
       if (err) {
         return { err, ok: false };
       }
-
-      console.log(useradata);
 
       return res.json({
         ok: true,
