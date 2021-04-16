@@ -153,10 +153,6 @@ app.get("/conversationByUser", (req, res) => {
 
       const usersExclude = [p.user];
 
-      slackConsole(
-        `Se encontraron ${result.length} conversaciones de este usuario`
-      );
-
       result.forEach((item) => {
         usersExclude.push(item.codea);
         usersExclude.push(item.codeb);
@@ -426,7 +422,7 @@ app.post("/conversation", (req, res) => {
           });
         }
 
-        await Slackuser.findByIdAndUpdate(
+        const result1 = await Slackuser.findByIdAndUpdate(
           userdata[0]._id,
           {
             $set: {
@@ -438,10 +434,11 @@ app.post("/conversation", (req, res) => {
           { new: true },
           (err, result) => {
             if (err) return err;
+            return result;
           }
         );
 
-        await Slackuser.findByIdAndUpdate(
+        const result2 = await Slackuser.findByIdAndUpdate(
           userdata[1]._id,
           {
             $set: {
@@ -453,12 +450,18 @@ app.post("/conversation", (req, res) => {
           { new: true },
           (err, result) => {
             if (err) return err;
+            return result;
           }
         );
 
         return res.json({
           ok: true,
-          result,
+          result: {
+            ok: true,
+            result,
+            result1,
+            result2,
+          },
         });
       });
     }

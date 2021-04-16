@@ -445,6 +445,7 @@ const findUserByMode = async ({ user, mode }) => {
   );
 };
 
+/*
 const findUserByCron = async ({ use }) => {
   return await Slackuser.find(
     { mode, state: "1", user: { $ne: user } },
@@ -463,5 +464,6 @@ const heyoGrou = async ({ user, mode = "chat", res }) => {
     return null;
   }
 };
+*/
 
 module.exports = app;
