@@ -100,6 +100,7 @@ app.put("/messageChannel/:id", verificarToken, (req, res) => {
 
 /* important */
 app.post("/message", (req, res) => {
+  console.log(req.body);
   let p = req.body;
   console.log(p);
   Conversation.find({ channel: p.channel }, (err, userdata) => {
