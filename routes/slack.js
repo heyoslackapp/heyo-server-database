@@ -93,80 +93,6 @@ app.get("/test", (req, res) => {
     });
 });
 
-//Esta funcion se llama siempre que un usuario se une al grupo
-app.post("/registeruser", (req, res) => {
-  const { user, channel, team, avatar, title, username } = req.body;
-
-  Slackuser.findOne({ user }, (err, userdata) => {
-    if (err) {
-      slackConsole(err);
-      return { err, ok: false };
-    }
-
-    if (userdata) {
-      slackConsole("El usuario se encuentra ya registrado");
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        {
-          $set: {
-            state: users.STATE.onhold,
-            people: 6,
-            connections: 6,
-            datelimit: moment().subtract(4, "day"),
-          },
-        },
-        { new: true },
-        (err, result) => {
-          if (err) {
-            slackConsole("Error Actualizando el usuario");
-            slackConsole(err);
-            return err;
-          }
-
-          slackConsole("Usuario Actualizado con exito");
-          return res.json({
-            ok: true,
-            result,
-          });
-        }
-      );
-    } else {
-      slackConsole("Se registrara el usuario");
-      let slackuser = new Slackuser({
-        user,
-        channel,
-        team,
-        avatar,
-        title,
-        username,
-        state: users.STATE.onhold,
-        mode: "chat",
-        people: 6,
-        connections: 6,
-        datelimit: moment().subtract(4, "day"),
-      });
-
-      slackuser.save((err, result) => {
-        if (err) {
-          slackConsole("Error Registrando el Usuario.");
-          slackConsole(err);
-          res.status(400).json({
-            ok: false,
-            err,
-            message: " Falla en los parametros",
-          });
-        }
-
-        slackConsole("Usuario Registrado con exito!.");
-        res.json({
-          ok: true,
-          result,
-        });
-      });
-    }
-  });
-});
-
 app.post("/saveUserInfo", (req, res) => {
   const { user, username, avatar, title } = req.body;
   Slackuser.findOne({ user }, (err, userdata) => {
@@ -188,39 +114,6 @@ app.post("/saveUserInfo", (req, res) => {
         }
       );
     } else {
-      res.json({
-        ok: false,
-        userdata,
-      });
-    }
-  });
-});
-
-app.post("/userInactive", (req, res) => {
-  const { user } = req.body;
-  slackConsole("Se buscara desactivar un usuario");
-  Slackuser.findOne({ user }, (err, userdata) => {
-    if (err) {
-      slackConsole("Error el usuario no existe");
-      return { err, ok: false };
-    }
-
-    if (userdata) {
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        { $set: { state: users.STATE.disabled } },
-        { new: true },
-        (err, result) => {
-          if (err) return err;
-          slackConsole("El usuario fue desactivado EXITOSAMENTE!!");
-          return res.json({
-            ok: true,
-            result,
-          });
-        }
-      );
-    } else {
-      slackConsole("Error Dedactivando el usuario");
       res.json({
         ok: false,
         userdata,
@@ -258,34 +151,6 @@ app.post("/userBusy", (req, res) => {
       });
     }
   });
-});
-
-app.post("/saveQuestion01", (req, res) => {
-  const { user, answer } = req.body;
-  console.log(req.body);
-
-  Slackuser.findOneAndUpdate(
-    { user },
-    {
-      $set: {
-        people: answer,
-        connections: answer,
-        datelimit: moment().subtract(4, "day"),
-      },
-    },
-    { new: true },
-    async (err, userdata) => {
-      if (err) {
-        slackConsole("Error el usuario no se encontro en la base de dato");
-        return { err, ok: false };
-      }
-
-      return res.json({
-        ok: true,
-        userdata,
-      });
-    }
-  );
 });
 
 app.post("/finduser", (req, res) => {
@@ -367,46 +232,6 @@ app.post("/createHeyoChannel", async (req, res) => {
   }
 });
 
-app.post("/validateChannel", async (req, res) => {
-  const { channelId } = req.body;
-
-  try {
-    // Call the conversations.list method using the WebClient
-    const result = await web.conversations.list({
-      exclude_archived: true,
-      types: "public_channel,private_channel,im,mpim",
-      limit: 1000,
-    });
-
-    let resultado = false;
-
-    result.channels.forEach(function (conversation) {
-      if (
-        conversation["id"] === channelId &&
-        conversation["name"] === "heyo-app"
-      ) {
-        resultado = true;
-        return res.json({
-          ok: true,
-        });
-      }
-    });
-    // ok
-    if (resultado === false) {
-      return res.json({
-        ok: false,
-      });
-    }
-
-    //saveConversations(result.channels);
-  } catch (error) {
-    console.error(error);
-    return res.json({
-      ok: false,
-    });
-  }
-});
-
 app.post("/inviteSlackConvesation", async (req, res) => {
   const { channel, users } = req.body;
 
@@ -445,25 +270,209 @@ const findUserByMode = async ({ user, mode }) => {
   );
 };
 
-/*
-const findUserByCron = async ({ use }) => {
-  return await Slackuser.find(
-    { mode, state: "1", user: { $ne: user } },
-    (err, result) => {
-      if (err) return err;
-      return result;
-    }
-  );
-};
+/* IMPORTANTS */
 
-const heyoGrou = async ({ user, mode = "chat", res }) => {
-  const users = await findUserByMode({ user, mode });
-  if (users[0]) {
-    return users[0].user;
-  } else {
-    return null;
+//Esta funcion se llama siempre que un usuario se une al grupo
+app.post("/registeruser", (req, res) => {
+  const { user, channel, team, avatar, title, username } = req.body;
+
+  Slackuser.findOne({ user }, (err, userdata) => {
+    if (err) {
+      slackConsole(err);
+      return { err, ok: false };
+    }
+
+    if (userdata) {
+      slackConsole("El usuario se encuentra ya registrado");
+      Slackuser.findByIdAndUpdate(
+        userdata._id,
+        {
+          $set: {
+            state: users.STATE.onhold,
+            people: 0,
+            connections: 0,
+            datelimit: moment().subtract(4, "day"),
+          },
+        },
+        { new: true },
+        (err, result) => {
+          if (err) {
+            slackConsole("Error Actualizando el usuario");
+            slackConsole(err);
+            return err;
+          }
+
+          slackConsole("Usuario Actualizado con exito");
+          return res.json({
+            ok: true,
+            result,
+          });
+        }
+      );
+    } else {
+      slackConsole("Se registrara el usuario");
+      let slackuser = new Slackuser({
+        user,
+        channel,
+        team,
+        avatar,
+        title,
+        username,
+        state: users.STATE.onhold,
+        mode: "chat",
+        people: 0,
+        connections: 0,
+        datelimit: moment().subtract(4, "day"),
+      });
+
+      slackuser.save((err, result) => {
+        if (err) {
+          slackConsole("Error Registrando el Usuario.");
+          slackConsole(err);
+          res.status(400).json({
+            ok: false,
+            err,
+            message: " Falla en los parametros",
+          });
+        }
+
+        slackConsole("Usuario Registrado con exito!.");
+        res.json({
+          ok: true,
+          result,
+        });
+      });
+    }
+  });
+});
+
+app.post("/saveQuestion01", (req, res) => {
+  const { user, answer } = req.body;
+  Slackuser.findOne({ user }, (err, userdata) => {
+    if (err) {
+      return { err, ok: false };
+    }
+
+    console.log(userdata);
+    if (userdata.people > 0) {
+      Slackuser.findOneAndUpdate(
+        { user },
+        {
+          $set: {
+            people: answer,
+          },
+        },
+        { new: true },
+        async (err, userdata) => {
+          if (err) {
+            slackConsole("Error el usuario no se encontro en la base de dato");
+            return { err, ok: false };
+          }
+
+          return res.json({
+            ok: true,
+            isNew: false,
+            userdata,
+          });
+        }
+      );
+    } else {
+      Slackuser.findOneAndUpdate(
+        { user },
+        {
+          $set: {
+            people: answer,
+            connections: answer,
+            datelimit: moment().subtract(4, "day"),
+          },
+        },
+        { new: true },
+        async (err, userdata) => {
+          if (err) {
+            slackConsole("Error el usuario no se encontro en la base de dato");
+            return { err, ok: false };
+          }
+
+          return res.json({
+            ok: true,
+            isNew: true,
+            userdata,
+          });
+        }
+      );
+    }
+  });
+});
+
+app.post("/userInactive", (req, res) => {
+  const { user } = req.body;
+  slackConsole("Se buscara desactivar un usuario");
+  Slackuser.findOne({ user }, (err, userdata) => {
+    if (err) {
+      slackConsole("Error el usuario no existe");
+      return { err, ok: false };
+    }
+
+    if (userdata) {
+      Slackuser.findByIdAndUpdate(
+        userdata._id,
+        { $set: { state: users.STATE.disabled } },
+        { new: true },
+        (err, result) => {
+          if (err) return err;
+          slackConsole("El usuario fue desactivado EXITOSAMENTE!!");
+          return res.json({
+            ok: true,
+            result,
+          });
+        }
+      );
+    } else {
+      slackConsole("Error Dedactivando el usuario");
+      res.json({
+        ok: false,
+        userdata,
+      });
+    }
+  });
+});
+
+app.post("/validateChannel", async (req, res) => {
+  const { channelId } = req.body;
+
+  try {
+    // Call the conversations.list method using the WebClient
+    const result = await web.conversations.list({
+      exclude_archived: true,
+      types: "public_channel,private_channel,im,mpim",
+      limit: 1000,
+    });
+
+    let resultado = false;
+
+    result.channels.forEach(function (conversation) {
+      if (
+        conversation["id"] === channelId &&
+        conversation["name"] === "heyo-app"
+      ) {
+        resultado = true;
+        return res.json({
+          ok: true,
+        });
+      }
+    });
+    // ok
+    if (resultado === false) {
+      return res.json({
+        ok: false,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      ok: false,
+    });
   }
-};
-*/
+});
 
 module.exports = app;

@@ -141,52 +141,6 @@ app.put("/conversation/:id", verificarToken, (req, res) => {
   });
 });
 
-app.get("/conversationByUser", (req, res) => {
-  let p = req.query;
-
-  Conversation.find(
-    { $or: [{ codea: p.user }, { codea: p.user }] },
-    async (err, result) => {
-      if (err) {
-        return { err, ok: false };
-      }
-
-      const usersExclude = [p.user];
-
-      result.forEach((item) => {
-        usersExclude.push(item.codea);
-        usersExclude.push(item.codeb);
-      });
-
-      await Slackuser.find(
-        {
-          user: { $nin: usersExclude },
-          connections: { $gt: 0 }, // conexiones mayor a 0
-          state: { $ne: "0" }, // status Activo
-          datelimit: {
-            $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
-          },
-        },
-        (err, result) => {
-          if (err) {
-            return { err, ok: false };
-          }
-
-          // console.log(result);
-
-          return res.json({
-            ok: true,
-            result: result[0],
-            userx: p.user,
-            usery: result[0].user,
-            bot: result[0].bot,
-          });
-        }
-      );
-    }
-  );
-});
-
 app.get("/findUserConversationByUser", (req, res) => {
   let p = req.query;
 
@@ -197,10 +151,6 @@ app.get("/findUserConversationByUser", (req, res) => {
         return { err, ok: false };
       }
 
-      result.forEach((item) => {
-        console.log(item.codea, item.codeb);
-      });
-
       await Slackuser.find(
         { $not: [{ user: "U013LS9KZ7S" }] },
         (err, result) => {
@@ -209,53 +159,6 @@ app.get("/findUserConversationByUser", (req, res) => {
           }
         }
       );
-
-      return res.json({
-        ok: true,
-        result,
-      });
-    }
-  );
-});
-
-app.get("/testFind", (req, res) => {
-  let p = req.query;
-  const arrayUsers = ["U013LS9KZ7S"];
-  Slackuser.find(
-    {
-      user: { $nin: arrayUsers },
-      connections: { $gt: 2 },
-    },
-    (err, result) => {
-      if (err) {
-        return { err, ok: false };
-      }
-
-      return res.json({
-        ok: true,
-        result: result[0],
-      });
-    }
-  );
-});
-
-app.get("/testFind2", (req, res) => {
-  //let p = req.query;
-  //const arrayUsers = ["U013LS9KZ7S"];
-
-  Slackuser.find(
-    {
-      user: { $nin: usersExclude },
-      connections: { $gt: 0 },
-      state: { $ne: "0" },
-      datelimit: {
-        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
-      },
-    },
-    (err, result) => {
-      if (err) {
-        return { err, ok: false };
-      }
 
       return res.json({
         ok: true,
@@ -357,36 +260,101 @@ app.put("/conversationState/:id", verificarToken, (req, res) => {
   });
 });
 
-app.post("/userBusy22", (req, res) => {
-  const { usera, userb } = req.body;
-  Slackuser.findOne({ usera }, (err, useradata) => {
+app.put("/conversationChannel/:id", verificarToken, (req, res) => {
+  // console.log(req.usuario);
+  let id = req.params.id;
+  let body = _.pick(req.body, ["channel"]);
+
+  Conversation.findByIdAndUpdate(id, body, { new: true }, (err, user) => {
     if (err) {
-      return { err, ok: false };
-    }
-
-    if (useradata && useradata.connections > 0) {
-      //let datelimit = moment().add(4, "days");
-      let connections = parseInt(useradata.connections) - 1;
-
-      Slackuser.findByIdAndUpdate(
-        userdata._id,
-        { $set: { state: users.STATE.connected, datelimit, connections } },
-        { new: true },
-        (err, result) => {
-          if (err) return err;
-          return res.json({
-            ok: true,
-            result,
-          });
-        }
-      );
-    } else {
-      res.json({
+      return res.status(400).json({
         ok: false,
-        userdata,
+        err,
       });
     }
+
+    res.json({
+      ok: true,
+      user,
+    });
   });
+});
+
+/* IMPORTANT */
+
+const FindUserToConversation = async (usersExclude) => {
+  const users = await Slackuser.find({
+    user: { $nin: usersExclude },
+    connections: { $gt: 0 }, // conexiones mayor a 0
+    state: { $ne: "0" }, // status Activo
+    datelimit: {
+      $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+    },
+  });
+
+  if (users.length > 0) {
+    const idUser = users[0].user;
+
+    const yyy = await Slackuser.findByIdAndUpdate(
+      users[0]._id,
+      {
+        datelimit: moment.now(),
+        state: "2",
+      },
+      { new: true }
+    );
+    return idUser;
+  } else {
+    return null;
+  }
+};
+
+app.get("/conversationByUser", (req, res) => {
+  let p = req.query;
+  Conversation.find(
+    { $or: [{ codea: p.user }, { codea: p.user }] },
+    (err, result) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      const usersExclude = [p.user];
+      result.forEach((item) => {
+        usersExclude.push(item.codea);
+        usersExclude.push(item.codeb);
+      });
+
+      FindUserToConversation(usersExclude).then((connectionWithId) => {
+        return res.json({
+          ok: true,
+          user: p.user,
+          connectionWithId,
+        });
+      });
+    }
+  );
+});
+
+app.post("/conversationByUserByCront", (req, res) => {
+  Slackuser.find(
+    {
+      connections: { $gt: 0 },
+      state: { $ne: "0" },
+      datelimit: {
+        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+      },
+    },
+    (err, useradata) => {
+      if (err) {
+        return { err, ok: false };
+      }
+
+      return res.json({
+        ok: true,
+        useradata,
+      });
+    }
+  ).limit(1);
 });
 
 app.post("/conversation", (req, res) => {
@@ -410,7 +378,7 @@ app.post("/conversation", (req, res) => {
         mode: "ok",
         created: moment.now(),
         updated: moment.now(),
-        channel: p.channel,
+        //channel: p.channel,
       });
 
       conversation.save(async (err, result) => {
@@ -468,46 +436,25 @@ app.post("/conversation", (req, res) => {
   );
 });
 
-app.put("/conversationChannel/:id", verificarToken, (req, res) => {
-  // console.log(req.usuario);
-  let id = req.params.id;
-  let body = _.pick(req.body, ["channel"]);
+const resetUsers = () => {
+  console.log("reset");
 
-  Conversation.findByIdAndUpdate(id, body, { new: true }, (err, user) => {
-    if (err) {
-      return res.status(400).json({
-        ok: false,
-        err,
-      });
-    }
-
-    res.json({
-      ok: true,
-      user,
-    });
-  });
-});
-
-app.post("/conversationByUserByCront", (req, res) => {
-  Slackuser.find(
+  Slackuser.updateMany(
+    {},
     {
-      connections: { $gt: 0 },
-      state: { $ne: "0" },
-      datelimit: {
-        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
-      },
+      datelimit: moment().subtract(5, "day"),
+      connections: 4,
+      people: 4,
+      state: 1,
     },
-    (err, useradata) => {
-      if (err) {
-        return { err, ok: false };
-      }
-
-      return res.json({
-        ok: true,
-        useradata,
-      });
+    (err, result2) => {
+      return result2;
     }
   );
-});
+};
+
+setTimeout(function () {
+  //resetUsers();
+}, 4000);
 
 module.exports = app;

@@ -78,6 +78,27 @@ app.get("/messageByChannel", (req, res) => {
   });
 });
 
+app.put("/messageChannel/:id", verificarToken, (req, res) => {
+  // console.log(req.usuario);
+  let id = req.params.id;
+  let body = _.pick(req.body, ["channel"]);
+
+  Conversation.findByIdAndUpdate(id, body, { new: true }, (err, user) => {
+    if (err) {
+      return res.status(400).json({
+        ok: false,
+        err,
+      });
+    }
+
+    res.json({
+      ok: true,
+      user,
+    });
+  });
+});
+
+/* important */
 app.post("/message", (req, res) => {
   let p = req.body;
   console.log(p);
@@ -138,26 +159,6 @@ app.post("/message", (req, res) => {
         ok: false,
       });
     }
-  });
-});
-
-app.put("/messageChannel/:id", verificarToken, (req, res) => {
-  // console.log(req.usuario);
-  let id = req.params.id;
-  let body = _.pick(req.body, ["channel"]);
-
-  Conversation.findByIdAndUpdate(id, body, { new: true }, (err, user) => {
-    if (err) {
-      return res.status(400).json({
-        ok: false,
-        err,
-      });
-    }
-
-    res.json({
-      ok: true,
-      user,
-    });
   });
 });
 
