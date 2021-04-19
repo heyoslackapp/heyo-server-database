@@ -122,7 +122,6 @@ app.get("/conversationDetails/:conversationId", verificarToken, (req, res) => {
 });
 
 app.put("/conversation/:id", verificarToken, (req, res) => {
-  // console.log(req.usuario);
   let id = req.params.id;
   let body = _.pick(req.body, ["state"]);
 
@@ -216,7 +215,6 @@ app.post("/usuarixDetails/:userId", verificarToken, (req, res) => {
 });
 
 app.put("/conversationArchived/:id", verificarToken, (req, res) => {
-  // console.log(req.usuario);
   let id = req.params.id;
   let params = req.body;
 
@@ -261,7 +259,6 @@ app.put("/conversationState/:id", verificarToken, (req, res) => {
 });
 
 app.put("/conversationChannel/:id", verificarToken, (req, res) => {
-  // console.log(req.usuario);
   let id = req.params.id;
   let body = _.pick(req.body, ["channel"]);
 
@@ -427,8 +424,6 @@ app.post("/conversation", (req, res) => {
           result: {
             ok: true,
             result,
-            result1,
-            result2,
           },
         });
       });

@@ -100,9 +100,7 @@ app.put("/messageChannel/:id", verificarToken, (req, res) => {
 
 /* important */
 app.post("/message", (req, res) => {
-  console.log(req.body);
   let p = req.body;
-  console.log(p);
   Conversation.find({ channel: p.channel }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
@@ -161,6 +159,30 @@ app.post("/message", (req, res) => {
       });
     }
   });
+});
+
+app.post("/setChanneltoConversation", (req, res) => {
+  let p = req.body;
+  Conversation.findByIdAndUpdate(
+    p.conversationId,
+    {
+      channel: p.channelId,
+    },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        return res.status(400).json({
+          ok: false,
+          err,
+        });
+      }
+
+      return res.json({
+        ok: true,
+        result,
+      });
+    }
+  );
 });
 
 module.exports = app;
