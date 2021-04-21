@@ -338,7 +338,7 @@ app.post("/conversationByUserByCront", (req, res) => {
       connections: { $gt: 0 },
       state: { $ne: "0" },
       datelimit: {
-        $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+        $lte: moment("2021-04-20", "YYYY-MM-DD").toISOString(),
       },
     },
     (err, useradata) => {
@@ -373,8 +373,8 @@ app.post("/conversation", (req, res) => {
         codeb: userdata[1].user,
         state: 1,
         mode: "ok",
-        created: moment.now(),
-        updated: moment.now(),
+        created: new Date(),
+        updated: new Date(),
         //channel: p.channel,
       });
 
@@ -392,7 +392,7 @@ app.post("/conversation", (req, res) => {
           {
             $set: {
               connections: parseInt(userdata[0].connections) - 1,
-              datelimit: moment.now(),
+              datelimit: new Date(),
               state: "2",
             },
           },
@@ -408,7 +408,7 @@ app.post("/conversation", (req, res) => {
           {
             $set: {
               connections: parseInt(userdata[1].connections) - 1,
-              datelimit: moment.now(),
+              datelimit: new Date(),
               state: "2",
             },
           },
@@ -451,5 +451,12 @@ const resetUsers = () => {
 setTimeout(function () {
   //resetUsers();
 }, 4000);
+
+console.log(new Date());
+console.log("hoy", moment("2021-04-20", "YYYY-MM-DD").toISOString());
+console.log(
+  "ayer",
+  moment("2021-04-20", "YYYY-MM-DD").subtract(1, "days").toISOString()
+);
 
 module.exports = app;

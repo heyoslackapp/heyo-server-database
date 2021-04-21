@@ -100,63 +100,62 @@ app.put("/messageChannel/:id", verificarToken, (req, res) => {
 
 /* important */
 app.post("/message", (req, res) => {
+  console.log("mensaje recibido");
   let p = req.body;
   Conversation.find({ channel: p.channel }, (err, userdata) => {
     if (err) {
       return { err, ok: false };
     }
 
-    if (userdata.length > 0) {
-      slackuser.find({ user: p.user }, (err, userinfo) => {
-        if (err) {
-          return { err, ok: false };
-        }
+    console.log(userdata);
 
-        Conversation.findByIdAndUpdate(
-          userdata[0]._id,
-          {
-            lastinteraction: moment.now(),
-            interactions: userdata[0].interactions + 1,
-          },
-          { new: true },
-          (err, result) => {
+    if (userdata.length > 0) {
+      console.log("hagamos el trabajo");
+      console.log(userdata[0]._id);
+
+      Conversation.updateMany(
+        { channel: p.channel },
+        {
+          lastinteraction: new Date(),
+          interactions: userdata[0].interactions + 1,
+        },
+        { new: true },
+        (err, result) => {
+          console.log("hecho");
+
+          console.log(result);
+
+          if (err) {
+            return res.status(400).json({
+              ok: false,
+              err,
+            });
+          }
+
+          let message = new Message({
+            text: p.text,
+            channel: p.channel,
+            team: p.team,
+            conversation: userdata[0]._id,
+            created: moment.now(),
+          });
+
+          message.save(async (err, result) => {
             if (err) {
-              return res.status(400).json({
+              res.status(400).json({
                 ok: false,
                 err,
+                message: " Falla en los parametros",
               });
             }
 
-            let message = new Message({
-              text: p.text,
-              channel: p.channel,
-              team: p.team,
-              user: userinfo[0]._id,
-              conversation: userdata[0]._id,
-              created: moment.now(),
+            return res.json({
+              ok: true,
+              result,
             });
-
-            message.save(async (err, result) => {
-              if (err) {
-                res.status(400).json({
-                  ok: false,
-                  err,
-                  message: " Falla en los parametros",
-                });
-              }
-
-              return res.json({
-                ok: true,
-                result,
-              });
-            });
-          }
-        );
-      });
-    } else {
-      return res.json({
-        ok: false,
-      });
+          });
+        }
+      );
     }
   });
 });

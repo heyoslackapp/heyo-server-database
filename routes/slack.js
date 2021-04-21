@@ -404,6 +404,13 @@ app.post("/saveQuestion01", (req, res) => {
   });
 });
 
+app.get("/slack/authorization", (req, res) => {
+  return res.json({
+    ok: true,
+    msg: "todo ok",
+  });
+});
+
 app.post("/userInactive", (req, res) => {
   const { user } = req.body;
   slackConsole("Se buscara desactivar un usuario");
