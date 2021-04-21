@@ -452,11 +452,4 @@ setTimeout(function () {
   //resetUsers();
 }, 4000);
 
-console.log(new Date());
-console.log("hoy", moment("2021-04-20", "YYYY-MM-DD").toISOString());
-console.log(
-  "ayer",
-  moment("2021-04-20", "YYYY-MM-DD").subtract(1, "days").toISOString()
-);
-
 module.exports = app;

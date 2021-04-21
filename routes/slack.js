@@ -405,9 +405,12 @@ app.post("/saveQuestion01", (req, res) => {
 });
 
 app.get("/slack/authorization", (req, res) => {
+  console.log(req);
+
   return res.json({
     ok: true,
     msg: "todo ok",
+    req,
   });
 });
 
