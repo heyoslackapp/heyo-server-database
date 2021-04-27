@@ -338,7 +338,7 @@ app.post("/conversationByUserByCront", (req, res) => {
       connections: { $gt: 0 },
       state: { $ne: "0" },
       datelimit: {
-        $lte: moment("2021-04-20", "YYYY-MM-DD").toISOString(),
+        $lte: moment(moment().format("YYYY-MM-DD")).toISOString(),
       },
     },
     (err, useradata) => {
