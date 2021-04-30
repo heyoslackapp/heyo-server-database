@@ -8,23 +8,6 @@ const server = http.createServer(app);
 const hbs = require("hbs");
 const bodyParser = require("body-parser");
 const path = require("path");
-//const { addRows } = require("./database/database");
-/*
-(async () => {
-  // See: https://api.slack.com/methods/chat.postMessage
-  const res = await web.chat.postMessage({ channel: conversationId, text: 'Hello there' });
-
-  const result = await web.conversations.create({
-    // The name of the conversation
-    name: "emoji-enthusiasts"
-  });
-
-  console.log('Conversation sent: ', result.ts);
-
-  // `res` contains information about the posted message
-  console.log('Message sent: ', res.ts);
-})();
-*/
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -63,9 +46,9 @@ mongoose
     useNewUrlParser: true,
     useFindAndModify: false,
   })
-  .then(() => console.log("DB Connected!"))
+  .then(() => console.log("Mongodb Connected!"))
   .catch((err) => {
-    console.log("error pedrito");
+    console.log("mongodb Error Connection");
     console.log(err);
   });
 
@@ -73,5 +56,5 @@ mongoose
 
 server.listen(process.env.PORT, () => {
   console.log(process.env.PORT);
-  console.log("conectado");
+  console.log("Server OK!");
 });

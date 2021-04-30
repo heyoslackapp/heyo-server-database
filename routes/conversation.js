@@ -1,27 +1,16 @@
 const express = require("express");
 const app = express();
 const { verificarToken } = require("../middlewares/autenticacion");
+const { globals, slackConsole } = require("../middlewares/settings");
+
 var moment = require("moment-timezone");
 const axios = require("axios");
 var cron = require("node-cron");
 
 const Slackuser = require("../models/slackuser");
 const Conversation = require("../models/conversation");
-
 const { WebClient } = require("@slack/web-api");
-const token =
-  "xoxp-224498606455-233668675862-1749324479827-8f6f4e4cb1b6c2cc328bfa957109484d";
-const web = new WebClient(token);
-
-const slackConsole = async (text) => {
-  await axios
-    .post(
-      "https://hooks.slack.com/services/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",
-      { text }
-    )
-    .then(function (response) {})
-    .catch(function (error) {});
-};
+const web = new WebClient(globals.TOKEN.slack_xoxp);
 
 app.post("/conversationLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -450,6 +439,10 @@ const resetUsers = () => {
   );
 };
 
+setTimeout(function () {
+  //resetUsers();
+}, 4000);
+
 const resetUsersConnectionsWeek = async () => {
   const users = await Slackuser.find({
     state: { $ne: "0" },
@@ -472,15 +465,7 @@ const resetUsersConnectionsWeek = async () => {
   }
 };
 
-setTimeout(function () {
-  //resetUsers();
-}, 4000);
-
-cron.schedule("0 0 13 * * Friday", () => {
-  slackConsole("Soy el Cron que se ejecuta ==== 0 0 13 * * Friday =====");
-});
-
-cron.schedule("0 0 10 * * Monday", () => {
+cron.schedule(globals.CRON.weekly, () => {
   resetUsersConnectionsWeek();
 });
 

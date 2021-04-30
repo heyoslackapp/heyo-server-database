@@ -4,10 +4,8 @@ const axios = require("axios");
 
 moment = require("moment");
 const { WebClient } = require("@slack/web-api");
-const token =
-  "xoxp-224498606455-233668675862-1749324479827-8f6f4e4cb1b6c2cc328bfa957109484d";
-const web = new WebClient(token);
-
+const { globals, slackConsole } = require("../middlewares/settings");
+const web = new WebClient(globals.TOKEN.slack_xoxp);
 const Root = require("../models/root");
 const Slackuser = require("../models/slackuser");
 const users = Object.freeze({
@@ -18,19 +16,8 @@ const users = Object.freeze({
   },
   MODE: {
     chat: "chat",
-    zoom: "zoom",
   },
 });
-
-const slackConsole = async (text) => {
-  await axios
-    .post(
-      "https://hooks.slack.com/services/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",
-      { text }
-    )
-    .then(function (response) {})
-    .catch(function (error) {});
-};
 
 app.post("/slackUserLoadGrid", (req, res) => {
   let parametro = req.body;
