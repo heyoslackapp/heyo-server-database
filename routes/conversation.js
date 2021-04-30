@@ -3,6 +3,7 @@ const app = express();
 const { verificarToken } = require("../middlewares/autenticacion");
 var moment = require("moment-timezone");
 const axios = require("axios");
+var cron = require("node-cron");
 
 const Slackuser = require("../models/slackuser");
 const Conversation = require("../models/conversation");
@@ -449,8 +450,38 @@ const resetUsers = () => {
   );
 };
 
+const resetUsersConnectionsWeek = async () => {
+  const users = await Slackuser.find({
+    state: { $ne: "0" },
+  });
+
+  if (users.length > 0) {
+    users.forEach(async (item) => {
+      const xxx = await Slackuser.findByIdAndUpdate(
+        item._id,
+        {
+          connections: item.people,
+        },
+        { new: true }
+      );
+    });
+
+    return true;
+  } else {
+    return null;
+  }
+};
+
 setTimeout(function () {
   //resetUsers();
 }, 4000);
+
+cron.schedule("0 0 13 * * Friday", () => {
+  slackConsole("Soy el Cron que se ejecuta ==== 0 0 13 * * Friday =====");
+});
+
+cron.schedule("0 0 10 * * Monday", () => {
+  resetUsersConnectionsWeek();
+});
 
 module.exports = app;
