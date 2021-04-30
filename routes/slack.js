@@ -289,20 +289,20 @@ app.post("/registeruser", (req, res) => {
         {
           $set: {
             state: users.STATE.onhold,
-            people: 0,
-            connections: 0,
+            people: 1,
+            connections: 1,
             datelimit: moment().subtract(4, "day"),
           },
         },
         { new: true },
         (err, result) => {
           if (err) {
-            slackConsole("Error Actualizando el usuario");
+            slackConsole("Error actualizando el usuario");
             slackConsole(err);
             return err;
           }
 
-          slackConsole("Usuario Actualizado con exito");
+          slackConsole("Usuario actualizado con exito");
           return res.json({
             ok: true,
             result,

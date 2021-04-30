@@ -285,7 +285,7 @@ const FindUserToConversation = async (usersExclude) => {
     connections: { $gt: 0 }, // conexiones mayor a 0
     state: { $ne: "0" }, // status Activo
     datelimit: {
-      $lte: new Date(`${moment().format("YYYY-MM-DD")}T00:00:00.000Z`),
+      $lte: moment(moment().format("YYYY-MM-DD")).toISOString(),
     },
   });
 
@@ -309,7 +309,7 @@ const FindUserToConversation = async (usersExclude) => {
 app.get("/conversationByUser", (req, res) => {
   let p = req.query;
   Conversation.find(
-    { $or: [{ codea: p.user }, { codea: p.user }] },
+    { $or: [{ codea: p.user }, { codeb: p.user }] },
     (err, result) => {
       if (err) {
         return { err, ok: false };
@@ -432,7 +432,7 @@ app.post("/conversation", (req, res) => {
 });
 
 const resetUsers = () => {
-  console.log("reset");
+  slackConsole("Reset Users");
 
   Slackuser.updateMany(
     {},
