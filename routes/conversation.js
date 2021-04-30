@@ -439,9 +439,9 @@ const resetUsers = () => {
   Slackuser.updateMany(
     {},
     {
-      datelimit: moment().subtract(1, "day"),
+      datelimit: moment().subtract(2, "day"),
       //connections: 4,
-      people: 4,
+      //people: 4,
       //state: 1,
     },
     (err, result2) => {
