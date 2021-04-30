@@ -284,9 +284,9 @@ const FindUserToConversation = async (usersExclude) => {
     user: { $nin: usersExclude },
     connections: { $gt: 0 }, // conexiones mayor a 0
     state: { $ne: "0" }, // status Activo
-    /* datelimit: {
+    datelimit: {
       $lte: moment(moment().format("YYYY-MM-DD")).toISOString(),
-    },  */
+    },
   });
 
   if (users.length > 0) {
