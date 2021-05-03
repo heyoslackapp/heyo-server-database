@@ -1,4 +1,13 @@
+const axios = require("axios");
+
 const globals = Object.freeze({
+  RESET: {
+    active: false,
+    datelimit: moment().subtract(2, "day"),
+    connections: 4,
+    people: 4,
+    state: 1,
+  },
   TEST: {
     active_cron_word: "activate-cron",
     isProducction: false,

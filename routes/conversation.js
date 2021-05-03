@@ -10,7 +10,6 @@ var cron = require("node-cron");
 const Slackuser = require("../models/slackuser");
 const Conversation = require("../models/conversation");
 const { WebClient } = require("@slack/web-api");
-const web = new WebClient(globals.TOKEN.slack_xoxp);
 
 app.post("/conversationLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -161,10 +160,6 @@ app.post("/usuarixDetails/:userId", verificarToken, (req, res) => {
   const conferenceId = req.usuario.conferenceId;
   let userId = req.params.userId;
   let parametro = req.body;
-
-  // const start = parametro.start;
-  // const end = parametro.end;
-  //  date: { $gte: start, $lt: end }
 
   UserEvent.find({ conferenceId, userId })
     .populate("questionId")
@@ -424,26 +419,32 @@ app.post("/conversation", (req, res) => {
 const resetUsers = () => {
   slackConsole("Reset Users");
   console.log("Reset");
-
   Slackuser.updateMany(
     {},
     {
-      datelimit: moment().subtract(2, "day"),
-      //connections: 4,
-      //people: 4,
-      //state: 1,
+      datelimit: globals.RESET.datelimit,
+      connections: globals.RESET.connections,
+      people: globals.RESET.people,
+      state: globals.RESET.state,
     },
     (err, result2) => {
       return result2;
     }
   );
+
+  /*
+  Conversation.deleteMany({}, (err, result2) => {
+    return result2;
+  });
+  */
 };
 
 setTimeout(function () {
-  //resetUsers();
+  if (globals.RESET.active) resetUsers();
 }, 4000);
 
 const resetUsersConnectionsWeek = async () => {
+  slackConsole("Reset Week Done");
   const users = await Slackuser.find({
     state: { $ne: "0" },
   });
