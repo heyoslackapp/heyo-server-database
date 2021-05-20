@@ -258,11 +258,13 @@ app.put("/conversationChannel/:id", verificarToken, (req, res) => {
   });
 });
 
-app.post("/resetUsersConnectionWeek/:token", verificarToken, (req, res) => {
+app.get("/resetUsersConnectionWeek/:token", (req, res) => {
   let token = req.params.token;
   if (globals.CRON.token === token) {
-    console.log("Reseteando Mensual Ok");
-    //resetUsersConnectionsWeek();
+    resetUsersConnectionsWeek();
+    return res.json({
+      ok: true,
+    });
   }
 });
 
