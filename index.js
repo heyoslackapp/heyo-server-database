@@ -27,8 +27,6 @@ app.use((req, res, next) => {
 app.use(require("./routes/index"));
 
 app.set("view engine", "hbs");
-// app.use(compression());
-// app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.resolve(__dirname, "public")));
@@ -51,8 +49,6 @@ mongoose
     console.log("mongodb Error Connection");
     console.log(err);
   });
-
-//addRows();
 
 server.listen(process.env.PORT, () => {
   console.log(process.env.PORT);
