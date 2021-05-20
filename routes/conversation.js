@@ -4,12 +4,8 @@ const { verificarToken } = require("../middlewares/autenticacion");
 const { globals, slackConsole } = require("../middlewares/settings");
 
 var moment = require("moment-timezone");
-const axios = require("axios");
-var cron = require("node-cron");
-
 const Slackuser = require("../models/slackuser");
 const Conversation = require("../models/conversation");
-const { WebClient } = require("@slack/web-api");
 
 app.post("/conversationLoadGrid", (req, res) => {
   let parametro = req.body;
@@ -262,6 +258,14 @@ app.put("/conversationChannel/:id", verificarToken, (req, res) => {
   });
 });
 
+app.post("/resetUsersConnectionWeek/:token", verificarToken, (req, res) => {
+  let token = req.params.token;
+  if (globals.CRON.token === token) {
+    console.log("Reseteando Mensual Ok");
+    //resetUsersConnectionsWeek();
+  }
+});
+
 /* IMPORTANT */
 
 const FindUserToConversation = async (usersExclude) => {
@@ -360,7 +364,6 @@ app.post("/conversation", (req, res) => {
         mode: "ok",
         created: new Date(),
         updated: new Date(),
-        //channel: p.channel,
       });
 
       conversation.save(async (err, result) => {
@@ -417,8 +420,6 @@ app.post("/conversation", (req, res) => {
 });
 
 const resetUsers = () => {
-  slackConsole("Reset Users");
-  console.log("Reset");
   Slackuser.updateMany(
     {},
     {
@@ -465,9 +466,5 @@ const resetUsersConnectionsWeek = async () => {
     return null;
   }
 };
-
-cron.schedule(globals.CRON.weekly, () => {
-  resetUsersConnectionsWeek();
-});
 
 module.exports = app;
