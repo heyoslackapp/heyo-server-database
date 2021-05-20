@@ -6,7 +6,6 @@ let urlDB =
 
 if (process.env.NODE_ENV === "dev") {
   urlDB =
-    // "mongodb+srv://root:s98tiMpvCMki!T9@cluster0.u72ao.mongodb.net/heyo?retryWrites=true&w=majority";
     "mongodb+srv://root:s98tiMpvCMki!T9@heyo.ls0xd.mongodb.net/heyo?retryWrites=true&w=majority";
 }
 
